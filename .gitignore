@@ -1,17 +1,17 @@
 # Python
-__pycache__/
+# __pycache__/  已上传
 *.py[cod]
 *$py.class
 *.so
 *.egg-info/
-dist/
-build/
+# dist/  已上传
+# build/  已上传
 *.egg
 .eggs/
 *.spec.bak
 
 # Virtual environments
-venv/
+# venv/  已上传
 env/
 ENV/
 
