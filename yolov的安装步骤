@@ -1,0 +1,48 @@
+YOLOv5 源码版安装步骤
+创建 conda 虚拟环境：conda create -n yolov5 python=3.10 -y
+激活虚拟环境：conda activate yolov5
+安装对应版本 PyTorch（CUDA/CPU 二选一）
+Git 克隆 YOLOv5 源码仓库
+进入 yolov5 项目根目录
+执行依赖安装：pip install -r requirements.txt
+运行 detect.py 推理脚本测试环境是否部署成功
+YOLOv7 源码版安装步骤
+创建 conda 虚拟环境：conda create -n yolov7 python=3.10 -y
+激活虚拟环境：conda activate yolov7
+安装对应版本 PyTorch（CUDA/CPU 二选一）
+Git 克隆 YOLOv7 源码仓库
+进入 yolov7 项目根目录
+执行依赖安装：pip install -r requirements.txt
+运行 detect.py 推理脚本测试环境是否部署成功
+YOLOv8 源码版安装步骤（Ultralytics 源码模式）
+创建 conda 虚拟环境：conda create -n yolov8 python=3.10 -y
+激活虚拟环境：conda activate yolov8
+安装对应版本 PyTorch（CUDA/CPU 二选一）
+Git 克隆 ultralytics 官方源码仓库
+进入 ultralytics 项目文件夹
+本地源码安装：pip install -e .
+命令行或编写代码加载 yolov8 模型进行推理测试
+YOLOv9（原版 WongKinYiu）源码版安装步骤
+创建 conda 虚拟环境：conda create -n yolov9 python=3.10 -y
+激活虚拟环境：conda activate yolov9
+安装对应版本 PyTorch（CUDA/CPU 二选一）
+Git 克隆 YOLOv9 原版源码仓库
+进入 yolov9 项目根目录
+执行依赖安装：pip install -r requirements.txt
+运行 detect.py 推理脚本测试环境是否部署成功
+YOLOv10（清华 THU-MIG 原版）源码版安装步骤
+创建 conda 虚拟环境：conda create -n yolov10 python=3.10 -y
+激活虚拟环境：conda activate yolov10
+安装对应版本 PyTorch（CUDA/CPU 二选一）
+Git 克隆 YOLOv10 清华官方源码仓库
+进入 yolov10 项目根目录
+执行依赖安装：pip install -r requirements.txt
+运行推理测试脚本验证部署
+YOLO11 源码版安装步骤（Ultralytics 源码模式）
+创建 conda 虚拟环境：conda create -n yolo11 python=3.10 -y
+激活虚拟环境：conda activate yolo11
+安装对应版本 PyTorch（CUDA/CPU 二选一）
+Git 克隆 ultralytics 官方源码仓库
+进入 ultralytics 项目文件夹
+本地源码安装：pip install -e .
+加载 yolo11 预训练模型执行推理测试
