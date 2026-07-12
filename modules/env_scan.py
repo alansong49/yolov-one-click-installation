@@ -2,7 +2,7 @@ import os
 import subprocess
 import sys
 from .platform_utils import (
-    get_conda_search_paths, get_gpu_check_cmd, is_windows
+    get_conda_search_paths, get_gpu_check_cmd, is_windows, is_linux
 )
 
 
@@ -96,9 +96,24 @@ def check_git():
     if result['success']:
         log_lines.append(f'[环境扫描] Git 已安装: {result["stdout"]}')
         return True, log_lines
-    else:
-        log_lines.append('[环境扫描] 未检测到 Git，请先安装 Git 并配置环境变量')
-        return False, log_lines
+
+    if is_linux():
+        linux_git_paths = [
+            '/usr/bin/git',
+            '/usr/local/bin/git',
+            '/bin/git',
+            '/snap/bin/git',
+        ]
+        for gpath in linux_git_paths:
+            if os.path.exists(gpath):
+                ver_result = run_command(f'"{gpath}" --version')
+                if ver_result['success']:
+                    log_lines.append(f'[环境扫描] Git 已安装: {ver_result["stdout"]}')
+                    log_lines.append(f'[环境扫描] Git 路径: {gpath}')
+                    return True, log_lines
+
+    log_lines.append('[环境扫描] 未检测到 Git，请先安装 Git 并配置环境变量')
+    return False, log_lines
 
 
 def check_nvidia_gpu():

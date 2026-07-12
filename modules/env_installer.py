@@ -309,6 +309,14 @@ def install_conda(conda_type='miniconda', version=None, install_path=None, progr
         if conda_type == 'anaconda':
             log('注意：Anaconda 体积较大，安装时间较长，请耐心等待')
 
+        parent_dir = os.path.dirname(install_path)
+        if parent_dir and not os.path.exists(parent_dir):
+            try:
+                os.makedirs(parent_dir, exist_ok=True)
+                log(f'创建安装目录: {parent_dir}')
+            except Exception as e:
+                log(f'⚠  创建目录失败: {e}')
+
         if is_windows():
             cmd = f'"{tmp_path}" /S /AddToPath=0 /RegisterPython=0 /D={install_path}'
             timeout = 1200 if conda_type == 'anaconda' else 600
@@ -332,10 +340,11 @@ def install_conda(conda_type='miniconda', version=None, install_path=None, progr
             return True, install_path
         else:
             log(f'❌ {display_name} 安装失败')
+            log(f'返回码: {result.returncode}')
             if result.stdout:
-                log(f'输出: {result.stdout[-500:]}')
+                log(f'标准输出:\n{result.stdout[-1000:]}')
             if result.stderr:
-                log(f'错误: {result.stderr[-500:]}')
+                log(f'错误输出:\n{result.stderr[-1000:]}')
             return False, None
     except subprocess.TimeoutExpired:
         log('❌ 安装超时')
