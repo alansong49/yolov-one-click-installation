@@ -1,6 +1,13 @@
 import os
 import yaml
 import sys
+import re
+
+
+def clean_output(text):
+    text = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', text)
+    text = re.sub(r'\r', '', text)
+    return text.strip()
 
 
 class YoloInstaller:
@@ -257,7 +264,7 @@ class YoloInstaller:
                         )
                         success = True
                         for line in process.stdout:
-                            line = line.rstrip()
+                            line = clean_output(line)
                             if line:
                                 yield from self._log(f'  {line}')
                         process.wait(timeout=600)

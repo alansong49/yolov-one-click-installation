@@ -3,6 +3,15 @@ import sys
 import subprocess
 import tempfile
 import time
+import re
+
+
+def clean_output(text):
+    text = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', text)
+    text = re.sub(r'\r', '', text)
+    return text.strip()
+
+
 from .platform_utils import (
     is_windows, is_linux, is_macos,
     get_miniconda_download_url, get_anaconda_download_url,
@@ -390,6 +399,9 @@ def install_conda(conda_type='miniconda', version=None, install_path=None, progr
             timeout=timeout
         )
 
+        stdout = clean_output(result.stdout) if result.stdout else ''
+        stderr = clean_output(result.stderr) if result.stderr else ''
+
         log(f'安装进程结束，返回码: {result.returncode}')
 
         if _check_conda_installed(install_path):
@@ -418,16 +430,16 @@ def install_conda(conda_type='miniconda', version=None, install_path=None, progr
                     log(f'❌ {display_name} 管理员权限安装也失败')
                     log(f'返回码: {admin_result["returncode"]}')
                     if admin_result['stderr']:
-                        log(f'错误信息: {admin_result["stderr"]}')
+                        log(f'错误信息: {clean_output(admin_result["stderr"])}')
                     return False, None
 
             log(f'❌ {display_name} 安装失败')
             log(f'返回码: {result.returncode}')
             all_output = ''
-            if result.stdout:
-                all_output += '=== 标准输出 ===\n' + result.stdout
-            if result.stderr:
-                all_output += '\n=== 错误输出 ===\n' + result.stderr
+            if stdout:
+                all_output += '=== 标准输出 ===\n' + stdout
+            if stderr:
+                all_output += '\n=== 错误输出 ===\n' + stderr
             if all_output:
                 log(f'安装日志:\n{all_output[-2000:]}')
             else:

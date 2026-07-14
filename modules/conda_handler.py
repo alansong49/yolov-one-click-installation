@@ -1,10 +1,10 @@
 import subprocess
 import os
 import sys
+import re
 from .platform_utils import (
     get_python_exe_name, get_conda_scripts_dir, get_conda_python_path, is_windows
 )
-
 
 PIP_MIRROR = "https://pypi.tuna.tsinghua.edu.cn/simple"
 PIP_TRUSTED_HOST = "pypi.tuna.tsinghua.edu.cn"
@@ -13,6 +13,12 @@ CONDA_MIRRORS = [
     "https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main",
     "https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free",
 ]
+
+
+def clean_output(text):
+    text = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', text)
+    text = re.sub(r'\r', '', text)
+    return text.strip()
 
 
 class CondaHandler:
@@ -40,7 +46,7 @@ class CondaHandler:
             )
             output_lines = []
             for line in process.stdout:
-                line = line.rstrip()
+                line = clean_output(line)
                 if line:
                     output_lines.append(line)
                     yield line

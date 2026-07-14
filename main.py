@@ -2014,6 +2014,12 @@ print('')
         return None
 
     def append_log(self, text):
+        import re
+        text = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', text)
+        text = re.sub(r'\r', '', text)
+        text = text.strip()
+        if not text:
+            return
         self._log_lines.append(text)
         self.log_text.append(text)
         cursor = self.log_text.textCursor()

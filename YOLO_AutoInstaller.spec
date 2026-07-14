@@ -35,5 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['e:\\程序\\一键安装 yolov\\assets\\app.ico'],
+    icon=['assets\\app.ico'],
 )

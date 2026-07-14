@@ -1395,6 +1395,9 @@
   ('_distutils_hack.override',
    'E:\\程序\\一键安装 yolov\\venv\\Lib\\site-packages\\_distutils_hack\\override.py',
    'PYMODULE'),
+  ('_py_abc',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\_py_abc.py',
+   'PYMODULE'),
   ('_py_warnings',
    'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\_py_warnings.py',
    'PYMODULE'),
@@ -1403,9 +1406,6 @@
    'PYMODULE'),
   ('stringprep',
    'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\stringprep.py',
-   'PYMODULE'),
-  ('_py_abc',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\_py_abc.py',
    'PYMODULE'),
   ('datetime',
    'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\datetime.py',
@@ -2512,57 +2512,45 @@
  [('python314.dll',
    'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\python314.dll',
    'BINARY'),
-  ('numpy.libs\\libscipy_openblas64_-b788215d9d47792bcba3a2e2a7114320.dll',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy.libs\\libscipy_openblas64_-b788215d9d47792bcba3a2e2a7114320.dll',
-   'BINARY'),
   ('numpy.libs\\msvcp140-a4c2229bdc2a2a630acdc095b4d86008.dll',
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\numpy.libs\\msvcp140-a4c2229bdc2a2a630acdc095b4d86008.dll',
    'BINARY'),
-  ('PyQt6\\Qt6\\plugins\\imageformats\\qgif.dll',
+  ('numpy.libs\\libscipy_openblas64_-b788215d9d47792bcba3a2e2a7114320.dll',
    'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\imageformats\\qgif.dll',
-   'BINARY'),
-  ('PyQt6\\Qt6\\plugins\\platforms\\qminimal.dll',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\platforms\\qminimal.dll',
-   'BINARY'),
-  ('PyQt6\\Qt6\\plugins\\iconengines\\qsvgicon.dll',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\iconengines\\qsvgicon.dll',
-   'BINARY'),
-  ('PyQt6\\Qt6\\plugins\\imageformats\\qwbmp.dll',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\imageformats\\qwbmp.dll',
-   'BINARY'),
-  ('PyQt6\\Qt6\\plugins\\imageformats\\qico.dll',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\imageformats\\qico.dll',
-   'BINARY'),
-  ('PyQt6\\Qt6\\plugins\\imageformats\\qsvg.dll',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\imageformats\\qsvg.dll',
-   'BINARY'),
-  ('PyQt6\\Qt6\\plugins\\generic\\qtuiotouchplugin.dll',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\generic\\qtuiotouchplugin.dll',
-   'BINARY'),
-  ('PyQt6\\Qt6\\plugins\\imageformats\\qpdf.dll',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\imageformats\\qpdf.dll',
-   'BINARY'),
-  ('PyQt6\\Qt6\\plugins\\imageformats\\qtga.dll',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\imageformats\\qtga.dll',
+   'yolov\\venv\\Lib\\site-packages\\numpy.libs\\libscipy_openblas64_-b788215d9d47792bcba3a2e2a7114320.dll',
    'BINARY'),
   ('PyQt6\\Qt6\\plugins\\imageformats\\qtiff.dll',
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\imageformats\\qtiff.dll',
    'BINARY'),
-  ('PyQt6\\Qt6\\plugins\\platforms\\qoffscreen.dll',
+  ('PyQt6\\Qt6\\plugins\\imageformats\\qsvg.dll',
    'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\platforms\\qoffscreen.dll',
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\imageformats\\qsvg.dll',
+   'BINARY'),
+  ('PyQt6\\Qt6\\plugins\\imageformats\\qpdf.dll',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\imageformats\\qpdf.dll',
+   'BINARY'),
+  ('PyQt6\\Qt6\\plugins\\platforms\\qminimal.dll',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\platforms\\qminimal.dll',
+   'BINARY'),
+  ('PyQt6\\Qt6\\plugins\\imageformats\\qtga.dll',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\imageformats\\qtga.dll',
+   'BINARY'),
+  ('PyQt6\\Qt6\\plugins\\imageformats\\qwbmp.dll',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\imageformats\\qwbmp.dll',
+   'BINARY'),
+  ('PyQt6\\Qt6\\plugins\\generic\\qtuiotouchplugin.dll',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\generic\\qtuiotouchplugin.dll',
+   'BINARY'),
+  ('PyQt6\\Qt6\\plugins\\imageformats\\qgif.dll',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\imageformats\\qgif.dll',
    'BINARY'),
   ('PyQt6\\Qt6\\plugins\\imageformats\\qicns.dll',
    'E:\\程序\\一键安装 '
@@ -2572,6 +2560,14 @@
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\imageformats\\qwebp.dll',
    'BINARY'),
+  ('PyQt6\\Qt6\\plugins\\iconengines\\qsvgicon.dll',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\iconengines\\qsvgicon.dll',
+   'BINARY'),
+  ('PyQt6\\Qt6\\plugins\\imageformats\\qico.dll',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\imageformats\\qico.dll',
+   'BINARY'),
   ('PyQt6\\Qt6\\plugins\\imageformats\\qjpeg.dll',
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\imageformats\\qjpeg.dll',
@@ -2579,6 +2575,10 @@
   ('PyQt6\\Qt6\\plugins\\platforms\\qwindows.dll',
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\platforms\\qwindows.dll',
+   'BINARY'),
+  ('PyQt6\\Qt6\\plugins\\platforms\\qoffscreen.dll',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\plugins\\platforms\\qoffscreen.dll',
    'BINARY'),
   ('PyQt6\\Qt6\\bin\\opengl32sw.dll',
    'E:\\程序\\一键安装 '
@@ -2680,6 +2680,9 @@
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\numpy\\_core\\_multiarray_umath.cp314-win_amd64.pyd',
    'EXTENSION'),
+  ('win32\\win32pdh.pyd',
+   'E:\\程序\\一键安装 yolov\\venv\\Lib\\site-packages\\win32\\win32pdh.pyd',
+   'EXTENSION'),
   ('numpy\\linalg\\_umath_linalg.cp314-win_amd64.pyd',
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\numpy\\linalg\\_umath_linalg.cp314-win_amd64.pyd',
@@ -2759,16 +2762,16 @@
   ('PyQt6\\Qt6\\bin\\Qt6Svg.dll',
    'E:\\程序\\一键安装 yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\bin\\Qt6Svg.dll',
    'BINARY'),
-  ('PyQt6\\Qt6\\bin\\MSVCP140.dll',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\bin\\MSVCP140.dll',
+  ('PyQt6\\Qt6\\bin\\Qt6Pdf.dll',
+   'E:\\程序\\一键安装 yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\bin\\Qt6Pdf.dll',
    'BINARY'),
   ('PyQt6\\Qt6\\bin\\Qt6Network.dll',
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\bin\\Qt6Network.dll',
    'BINARY'),
-  ('PyQt6\\Qt6\\bin\\Qt6Pdf.dll',
-   'E:\\程序\\一键安装 yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\bin\\Qt6Pdf.dll',
+  ('PyQt6\\Qt6\\bin\\MSVCP140.dll',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\bin\\MSVCP140.dll',
    'BINARY'),
   ('PyQt6\\Qt6\\bin\\Qt6Widgets.dll',
    'E:\\程序\\一键安装 '
@@ -2783,6 +2786,10 @@
   ('libffi-8.dll',
    'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\DLLs\\libffi-8.dll',
    'BINARY'),
+  ('pywin32_system32\\pywintypes314.dll',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\pywin32_system32\\pywintypes314.dll',
+   'BINARY'),
   ('PyQt6\\Qt6\\bin\\MSVCP140_2.dll',
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\bin\\MSVCP140_2.dll',
@@ -2790,13 +2797,13 @@
   ('python3.dll',
    'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\python3.dll',
    'BINARY'),
-  ('PyQt6\\Qt6\\bin\\VCRUNTIME140_1.dll',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\bin\\VCRUNTIME140_1.dll',
-   'BINARY'),
   ('PyQt6\\Qt6\\bin\\VCRUNTIME140.dll',
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\bin\\VCRUNTIME140.dll',
+   'BINARY'),
+  ('PyQt6\\Qt6\\bin\\VCRUNTIME140_1.dll',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\bin\\VCRUNTIME140_1.dll',
    'BINARY'),
   ('PyQt6\\Qt6\\bin\\MSVCP140_1.dll',
    'E:\\程序\\一键安装 '
@@ -2887,519 +2894,561 @@
   ('certifi\\py.typed',
    'E:\\程序\\一键安装 yolov\\venv\\Lib\\site-packages\\certifi\\py.typed',
    'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_da.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_da.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_uk.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_uk.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_de.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_de.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_gl.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_gl.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_gl.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_gl.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_ja.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_ja.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_sk.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_sk.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_lg.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_lg.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_cs.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_cs.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_hu.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_hu.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_fa.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_fa.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_zh_TW.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_zh_TW.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_de.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_de.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_ar.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_ar.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_en.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_en.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_ka.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_ka.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_es.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_es.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_pl.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_pl.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_ar.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_ar.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_pl.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_pl.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_sv.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_sv.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_ko.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_ko.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_fr.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_fr.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_fi.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_fi.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_sk.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_sk.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_hr.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_hr.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_lv.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_lv.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_uk.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_uk.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_hu.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_hu.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_cs.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_cs.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_en.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_en.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_he.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_he.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_sl.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_sl.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_ja.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_ja.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_zh_TW.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_zh_TW.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_he.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_he.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_pt_BR.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_pt_BR.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_sv.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_sv.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_ru.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_ru.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_sv.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_sv.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_cs.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_cs.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_ko.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_ko.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_gd.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_gd.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_ja.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_ja.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_pt_BR.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_pt_BR.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_bg.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_bg.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_pt_BR.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_pt_BR.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_zh_TW.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_zh_TW.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_lg.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_lg.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_hr.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_hr.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_tr.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_tr.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_tr.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_tr.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_nn.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_nn.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_zh_CN.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_zh_CN.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_ka.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_ka.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_fr.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_fr.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_it.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_it.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_hr.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_hr.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_nn.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_nn.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_lt.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_lt.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_fi.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_fi.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_uk.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_uk.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_de.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_de.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_ca.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_ca.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_es.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_es.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_fa.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_fa.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_ru.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_ru.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_tr.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_tr.qm',
-   'DATA'),
   ('PyQt6\\Qt6\\translations\\qt_help_ca.qm',
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_ca.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_da.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_da.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_ar.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_ar.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_ca.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_ca.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_nl.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_nl.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_sk.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_sk.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_zh_CN.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_zh_CN.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_fr.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_fr.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_nl.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_nl.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_da.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_da.qm',
    'DATA'),
   ('PyQt6\\Qt6\\translations\\qt_pt_PT.qm',
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_pt_PT.qm',
    'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_en.qm',
+  ('PyQt6\\Qt6\\translations\\qtbase_nl.qm',
    'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_en.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_bg.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_bg.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_hu.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_hu.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_sl.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_sl.qm',
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_nl.qm',
    'DATA'),
   ('PyQt6\\Qt6\\translations\\qt_gd.qm',
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_gd.qm',
    'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_ko.qm',
+  ('PyQt6\\Qt6\\translations\\qtbase_ru.qm',
    'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_ko.qm',
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_ru.qm',
    'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_lv.qm',
+  ('PyQt6\\Qt6\\translations\\qt_help_bg.qm',
    'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_lv.qm',
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_bg.qm',
    'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_es.qm',
+  ('PyQt6\\Qt6\\translations\\qt_help_fr.qm',
    'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_es.qm',
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_fr.qm',
    'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_ka.qm',
+  ('PyQt6\\Qt6\\translations\\qt_help_gl.qm',
    'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_ka.qm',
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_gl.qm',
    'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_zh_CN.qm',
+  ('PyQt6\\Qt6\\translations\\qtbase_lg.qm',
    'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_zh_CN.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_it.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_it.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qtbase_nl.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_nl.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_ru.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_ru.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_bg.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_bg.qm',
-   'DATA'),
-  ('PyQt6\\Qt6\\translations\\qt_help_it.qm',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_it.qm',
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_lg.qm',
    'DATA'),
   ('PyQt6\\Qt6\\translations\\qtbase_pl.qm',
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_pl.qm',
    'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_sv.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_sv.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_fr.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_fr.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_pt_BR.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_pt_BR.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_en.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_en.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_es.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_es.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_hu.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_hu.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_uk.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_uk.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_hu.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_hu.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_da.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_da.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_ar.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_ar.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_de.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_de.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_de.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_de.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_lv.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_lv.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_bg.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_bg.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_da.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_da.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_ko.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_ko.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_he.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_he.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_tr.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_tr.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_gd.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_gd.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_ru.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_ru.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_zh_TW.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_zh_TW.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_lg.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_lg.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_zh_CN.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_zh_CN.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_pl.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_pl.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_ca.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_ca.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_en.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_en.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_zh_CN.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_zh_CN.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_it.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_it.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_ar.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_ar.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_sv.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_sv.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_fr.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_fr.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_pt_BR.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_pt_BR.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_hu.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_hu.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_ka.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_ka.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_tr.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_tr.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_nn.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_nn.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_sv.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_sv.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_ar.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_ar.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_hr.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_hr.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_ko.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_ko.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_nl.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_nl.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_hr.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_hr.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_ja.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_ja.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_ko.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_ko.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_sk.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_sk.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_pl.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_pl.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_ja.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_ja.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_ka.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_ka.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_nl.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_nl.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_sk.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_sk.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_pt_BR.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_pt_BR.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_fi.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_fi.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_cs.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_cs.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_da.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_da.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_es.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_es.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_uk.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_uk.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_nn.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_nn.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_he.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_he.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_ja.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_ja.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_tr.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_tr.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_ca.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_ca.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_fi.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_fi.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_ka.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_ka.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_es.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_es.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_bg.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_bg.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_gl.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_gl.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_cs.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_cs.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_sl.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_sl.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_uk.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_uk.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_ru.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_ru.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_sk.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_sk.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_lv.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_lv.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_fa.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_fa.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_en.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_en.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_de.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_de.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_zh_TW.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_zh_TW.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_cs.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_cs.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_lt.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_lt.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_fa.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_fa.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qtbase_it.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qtbase_it.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_sl.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_sl.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_zh_CN.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_zh_CN.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_hr.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_hr.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_zh_TW.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_zh_TW.qm',
+   'DATA'),
+  ('PyQt6\\Qt6\\translations\\qt_help_it.qm',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_help_it.qm',
+   'DATA'),
   ('PyQt6\\Qt6\\translations\\qt_nn.qm',
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\PyQt6\\Qt6\\translations\\qt_nn.qm',
    'DATA'),
-  ('numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\mt19937\\LICENSE.md',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\mt19937\\LICENSE.md',
-   'DATA'),
-  ('numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\distributions\\LICENSE.md',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\distributions\\LICENSE.md',
-   'DATA'),
-  ('numpy-2.5.1.dist-info\\DELVEWHEEL',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\DELVEWHEEL',
-   'DATA'),
-  ('numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\splitmix64\\LICENSE.md',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\splitmix64\\LICENSE.md',
-   'DATA'),
   ('numpy-2.5.1.dist-info\\WHEEL',
    'E:\\程序\\一键安装 yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\WHEEL',
-   'DATA'),
-  ('numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\highway\\LICENSE',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\highway\\LICENSE',
-   'DATA'),
-  ('numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\npysort\\x86-simd-sort\\LICENSE.md',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\npysort\\x86-simd-sort\\LICENSE.md',
    'DATA'),
   ('numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\sfc64\\LICENSE.md',
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\sfc64\\LICENSE.md',
    'DATA'),
-  ('numpy-2.5.1.dist-info\\licenses\\numpy\\random\\LICENSE.md',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\random\\LICENSE.md',
-   'DATA'),
-  ('numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\pcg64\\LICENSE.md',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\pcg64\\LICENSE.md',
-   'DATA'),
-  ('numpy-2.5.1.dist-info\\INSTALLER',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\INSTALLER',
-   'DATA'),
-  ('numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\common\\pythoncapi-compat\\COPYING',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\common\\pythoncapi-compat\\COPYING',
-   'DATA'),
-  ('numpy-2.5.1.dist-info\\licenses\\numpy\\linalg\\lapack_lite\\LICENSE.txt',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\linalg\\lapack_lite\\LICENSE.txt',
-   'DATA'),
-  ('numpy-2.5.1.dist-info\\RECORD',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\RECORD',
-   'DATA'),
   ('numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\include\\numpy\\libdivide\\LICENSE.txt',
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\include\\numpy\\libdivide\\LICENSE.txt',
-   'DATA'),
-  ('numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\multiarray\\dragon4_LICENSE.txt',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\multiarray\\dragon4_LICENSE.txt',
-   'DATA'),
-  ('numpy-2.5.1.dist-info\\licenses\\LICENSE.txt',
-   'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\LICENSE.txt',
    'DATA'),
   ('numpy-2.5.1.dist-info\\licenses\\numpy\\fft\\pocketfft\\LICENSE.md',
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\fft\\pocketfft\\LICENSE.md',
    'DATA'),
-  ('numpy-2.5.1.dist-info\\licenses\\numpy\\ma\\LICENSE',
+  ('numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\pcg64\\LICENSE.md',
    'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\ma\\LICENSE',
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\pcg64\\LICENSE.md',
    'DATA'),
-  ('numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\philox\\LICENSE.md',
+  ('numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\mt19937\\LICENSE.md',
    'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\philox\\LICENSE.md',
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\mt19937\\LICENSE.md',
    'DATA'),
-  ('numpy-2.5.1.dist-info\\entry_points.txt',
+  ('numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\highway\\LICENSE',
    'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\entry_points.txt',
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\highway\\LICENSE',
    'DATA'),
-  ('numpy-2.5.1.dist-info\\METADATA',
+  ('numpy-2.5.1.dist-info\\licenses\\LICENSE.txt',
    'E:\\程序\\一键安装 '
-   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\METADATA',
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\LICENSE.txt',
+   'DATA'),
+  ('numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\multiarray\\dragon4_LICENSE.txt',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\multiarray\\dragon4_LICENSE.txt',
+   'DATA'),
+  ('numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\common\\pythoncapi-compat\\COPYING',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\common\\pythoncapi-compat\\COPYING',
    'DATA'),
   ('numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\umath\\svml\\LICENSE',
    'E:\\程序\\一键安装 '
    'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\umath\\svml\\LICENSE',
    'DATA'),
+  ('numpy-2.5.1.dist-info\\licenses\\numpy\\random\\LICENSE.md',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\random\\LICENSE.md',
+   'DATA'),
+  ('numpy-2.5.1.dist-info\\entry_points.txt',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\entry_points.txt',
+   'DATA'),
+  ('numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\npysort\\x86-simd-sort\\LICENSE.md',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\_core\\src\\npysort\\x86-simd-sort\\LICENSE.md',
+   'DATA'),
+  ('numpy-2.5.1.dist-info\\RECORD',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\RECORD',
+   'DATA'),
+  ('numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\distributions\\LICENSE.md',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\distributions\\LICENSE.md',
+   'DATA'),
+  ('numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\splitmix64\\LICENSE.md',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\splitmix64\\LICENSE.md',
+   'DATA'),
+  ('numpy-2.5.1.dist-info\\METADATA',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\METADATA',
+   'DATA'),
+  ('numpy-2.5.1.dist-info\\licenses\\numpy\\linalg\\lapack_lite\\LICENSE.txt',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\linalg\\lapack_lite\\LICENSE.txt',
+   'DATA'),
+  ('numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\philox\\LICENSE.md',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\random\\src\\philox\\LICENSE.md',
+   'DATA'),
+  ('numpy-2.5.1.dist-info\\DELVEWHEEL',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\DELVEWHEEL',
+   'DATA'),
+  ('numpy-2.5.1.dist-info\\licenses\\numpy\\ma\\LICENSE',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\licenses\\numpy\\ma\\LICENSE',
+   'DATA'),
+  ('numpy-2.5.1.dist-info\\INSTALLER',
+   'E:\\程序\\一键安装 '
+   'yolov\\venv\\Lib\\site-packages\\numpy-2.5.1.dist-info\\INSTALLER',
+   'DATA'),
   ('base_library.zip',
    'E:\\程序\\一键安装 yolov\\build\\YOLO_AutoInstaller\\base_library.zip',
    'DATA')],
- [('linecache',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\linecache.py',
+ [('heapq',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\heapq.py',
    'PYMODULE'),
-  ('types',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\types.py',
+  ('re._parser',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\re\\_parser.py',
    'PYMODULE'),
-  ('_collections_abc',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\_collections_abc.py',
+  ('re._constants',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\re\\_constants.py',
    'PYMODULE'),
-  ('weakref',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\weakref.py',
+  ('re._compiler',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\re\\_compiler.py',
    'PYMODULE'),
-  ('locale',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\locale.py',
+  ('re._casefix',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\re\\_casefix.py',
    'PYMODULE'),
   ('functools',
    'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\functools.py',
    'PYMODULE'),
+  ('types',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\types.py',
+   'PYMODULE'),
   ('sre_compile',
    'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\sre_compile.py',
    'PYMODULE'),
-  ('warnings',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\warnings.py',
+  ('abc',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\abc.py',
    'PYMODULE'),
-  ('codecs',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\codecs.py',
+  ('io',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\io.py',
+   'PYMODULE'),
+  ('ntpath',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\ntpath.py',
+   'PYMODULE'),
+  ('sre_parse',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\sre_parse.py',
    'PYMODULE'),
   ('genericpath',
    'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\genericpath.py',
    'PYMODULE'),
-  ('heapq',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\heapq.py',
+  ('keyword',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\keyword.py',
+   'PYMODULE'),
+  ('_collections_abc',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\_collections_abc.py',
+   'PYMODULE'),
+  ('linecache',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\linecache.py',
    'PYMODULE'),
   ('copyreg',
    'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\copyreg.py',
+   'PYMODULE'),
+  ('enum',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\enum.py',
+   'PYMODULE'),
+  ('codecs',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\codecs.py',
+   'PYMODULE'),
+  ('posixpath',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\posixpath.py',
+   'PYMODULE'),
+  ('locale',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\locale.py',
+   'PYMODULE'),
+  ('warnings',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\warnings.py',
+   'PYMODULE'),
+  ('reprlib',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\reprlib.py',
+   'PYMODULE'),
+  ('weakref',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\weakref.py',
+   'PYMODULE'),
+  ('collections',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\collections\\__init__.py',
+   'PYMODULE'),
+  ('sre_constants',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\sre_constants.py',
    'PYMODULE'),
   ('encodings.zlib_codec',
    'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\encodings\\zlib_codec.py',
@@ -3770,59 +3819,17 @@
   ('encodings',
    'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\encodings\\__init__.py',
    'PYMODULE'),
-  ('keyword',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\keyword.py',
-   'PYMODULE'),
-  ('reprlib',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\reprlib.py',
-   'PYMODULE'),
-  ('ntpath',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\ntpath.py',
-   'PYMODULE'),
-  ('collections',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\collections\\__init__.py',
-   'PYMODULE'),
-  ('sre_parse',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\sre_parse.py',
-   'PYMODULE'),
-  ('abc',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\abc.py',
-   'PYMODULE'),
   ('operator',
    'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\operator.py',
    'PYMODULE'),
   ('_weakrefset',
    'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\_weakrefset.py',
    'PYMODULE'),
-  ('enum',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\enum.py',
-   'PYMODULE'),
-  ('io',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\io.py',
-   'PYMODULE'),
-  ('re._parser',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\re\\_parser.py',
-   'PYMODULE'),
-  ('re._constants',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\re\\_constants.py',
-   'PYMODULE'),
-  ('re._compiler',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\re\\_compiler.py',
-   'PYMODULE'),
-  ('re._casefix',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\re\\_casefix.py',
+  ('stat',
+   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\stat.py',
    'PYMODULE'),
   ('re',
    'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\re\\__init__.py',
-   'PYMODULE'),
-  ('sre_constants',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\sre_constants.py',
-   'PYMODULE'),
-  ('posixpath',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\posixpath.py',
-   'PYMODULE'),
-  ('stat',
-   'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\stat.py',
    'PYMODULE'),
   ('traceback',
    'C:\\Users\\JockerSilas\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\traceback.py',
