@@ -19,19 +19,13 @@ def get_resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
-def get_runtime_dir():
-    if getattr(sys, 'frozen', False):
-        return os.path.dirname(sys.executable)
-    else:
-        return os.path.dirname(os.path.abspath(__file__))
-
-
 from modules.env_scan import scan_environment
 from modules.conda_handler import CondaHandler
 from modules.yolo_installer import YoloInstaller
 from modules.auto_test import AutoTester
 from modules.env_installer import install_all, MINICONDA_VERSIONS, ANACONDA_VERSIONS, GIT_VERSIONS
 from modules.editor_deploy import detect_editors, configure_vscode, open_in_vscode, configure_pycharm, open_in_pycharm
+from modules.platform_utils import get_runtime_dir
 
 
 def get_available_drives():
@@ -480,12 +474,8 @@ class EnvInstallDialog(QDialog):
         drive = self.conda_drive_combo.currentData()
         folder = self.conda_folder_edit.text().strip()
         if drive and folder:
-            from modules.platform_utils import is_windows
-            if is_windows():
-                base = drive if drive.endswith('\\') else drive + '\\'
-            else:
-                base = drive if drive.endswith('/') else drive + '/'
-            path = os.path.join(base, folder)
+            from modules.platform_utils import normalize_path
+            path = normalize_path(os.path.join(drive, folder))
             self.conda_path_preview.setText(f'完整路径: {path}')
 
     def get_config(self):
@@ -493,12 +483,8 @@ class EnvInstallDialog(QDialog):
         folder = self.conda_folder_edit.text().strip()
         install_path = None
         if drive and folder:
-            from modules.platform_utils import is_windows
-            if is_windows():
-                base = drive if drive.endswith('\\') else drive + '\\'
-            else:
-                base = drive if drive.endswith('/') else drive + '/'
-            install_path = os.path.join(base, folder)
+            from modules.platform_utils import normalize_path
+            install_path = normalize_path(os.path.join(drive, folder))
         return {
             'conda_type': self.conda_type_combo.currentData(),
             'conda_version': self.conda_version_combo.currentData(),
@@ -665,8 +651,16 @@ class MainWindow(QMainWindow):
             'QPushButton:disabled { background-color: #cccccc; color: #666666; }'
         )
         self.install_env_btn.clicked.connect(self.start_env_install)
+        self.browse_conda_btn = QPushButton('📁 指定 Conda 路径')
+        self.browse_conda_btn.setMinimumHeight(30)
+        self.browse_conda_btn.clicked.connect(self._browse_conda_path)
+        self.global_scan_btn = QPushButton('🔍 全局扫描 Conda')
+        self.global_scan_btn.setMinimumHeight(30)
+        self.global_scan_btn.clicked.connect(self._global_scan_conda)
         btn_layout.addWidget(self.scan_btn)
         btn_layout.addWidget(self.install_env_btn)
+        btn_layout.addWidget(self.browse_conda_btn)
+        btn_layout.addWidget(self.global_scan_btn)
         btn_layout.addStretch()
 
         env_layout.addLayout(info_grid)
@@ -1805,6 +1799,101 @@ print('')
         self.env_scan_thread.finished_signal.connect(self.on_env_scan_finished)
         self.env_scan_thread.start()
 
+    def _browse_conda_path(self):
+        from modules.platform_utils import is_windows, save_conda_install_path, normalize_path
+        from PyQt6.QtWidgets import QFileDialog
+
+        if is_windows():
+            filters = '可执行文件 (*.exe);;所有文件 (*.*)'
+        else:
+            filters = '可执行文件 (*);;所有文件 (*.*)'
+
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            '选择 Conda 可执行文件',
+            '',
+            filters
+        )
+
+        if not file_path:
+            return
+
+        file_path = normalize_path(file_path)
+
+        try:
+            import subprocess
+            result = subprocess.run(
+                f'"{file_path}" --version',
+                capture_output=True,
+                text=True,
+                encoding='utf-8',
+                errors='replace',
+                shell=True,
+                timeout=30
+            )
+
+            if result.returncode == 0:
+                save_conda_install_path(file_path)
+                self.conda_label.setText(f'Conda: ✅ 已手动指定 ({os.path.dirname(file_path)})')
+                self.conda_label.setStyleSheet('color: green;')
+                self.append_log(f'[手动指定] Conda 路径验证通过: {file_path}')
+                self.append_log(f'Conda 版本: {result.stdout.strip()}')
+                self.env_result = {
+                    'conda_path': file_path,
+                    'conda_version': result.stdout.strip(),
+                    'git_available': self.env_result.get('git_available', False) if hasattr(self, 'env_result') else False,
+                    'has_gpu': self.env_result.get('has_gpu', False) if hasattr(self, 'env_result') else False,
+                    'log': f'[手动指定] 已设置 Conda 路径: {file_path}'
+                }
+                self._load_versions()
+                self._refresh_annotation_envs()
+                self._refresh_editor_envs()
+            else:
+                QMessageBox.warning(self, '验证失败', f'无法验证此路径是否为有效的 Conda 可执行文件\n错误信息: {result.stderr}')
+        except Exception as e:
+            QMessageBox.warning(self, '操作失败', f'指定 Conda 路径时发生错误: {str(e)}')
+
+    def _global_scan_conda(self):
+        from PyQt6.QtCore import QThread, pyqtSignal
+
+        class GlobalScanThread(QThread):
+            finished_signal = pyqtSignal(object)
+
+            def run(self):
+                from modules.env_scan import global_scan_conda
+                conda_path, log = global_scan_conda()
+                self.finished_signal.emit({'conda_path': conda_path, 'log': log})
+
+        self.global_scan_btn.setEnabled(False)
+        self.append_log('🔍 开始全局扫描 Conda，请耐心等待...')
+
+        self.global_scan_thread = GlobalScanThread()
+        self.global_scan_thread.finished_signal.connect(self.on_global_scan_finished)
+        self.global_scan_thread.start()
+
+    def on_global_scan_finished(self, result):
+        self.global_scan_btn.setEnabled(True)
+        self.append_log(result['log'])
+
+        if result['conda_path']:
+            from modules.platform_utils import save_conda_install_path, normalize_path
+            conda_path = normalize_path(result['conda_path'])
+            save_conda_install_path(conda_path)
+            self.conda_label.setText(f'Conda: ✅ 全局扫描找到 ({os.path.dirname(conda_path)})')
+            self.conda_label.setStyleSheet('color: green;')
+            self.env_result = {
+                'conda_path': conda_path,
+                'git_available': self.env_result.get('git_available', False) if hasattr(self, 'env_result') else False,
+                'has_gpu': self.env_result.get('has_gpu', False) if hasattr(self, 'env_result') else False,
+                'log': result['log']
+            }
+            self._load_versions()
+            self._refresh_annotation_envs()
+            self._refresh_editor_envs()
+        else:
+            self.conda_label.setText('Conda: ❌ 全局扫描未找到，请尝试手动指定或自动安装')
+            self.conda_label.setStyleSheet('color: red;')
+
     def on_env_scan_finished(self, result):
         self.env_result = result
         self.append_log(result['log'])
@@ -1892,12 +1981,8 @@ print('')
         drive = self.workspace_drive_combo.currentData()
         folder = self.workspace_folder_edit.text().strip()
         if drive and folder:
-            from modules.platform_utils import is_windows
-            if is_windows():
-                base = drive if drive.endswith('\\') else drive + '\\'
-            else:
-                base = drive if drive.endswith('/') else drive + '/'
-            path = os.path.join(base, folder)
+            from modules.platform_utils import normalize_path
+            path = normalize_path(os.path.join(drive, folder))
             self.workspace_path_preview.setText(f'完整路径: {path}')
 
     def _browse_workspace(self):
@@ -1924,12 +2009,8 @@ print('')
         drive = self.workspace_drive_combo.currentData()
         folder = self.workspace_folder_edit.text().strip()
         if drive and folder:
-            from modules.platform_utils import is_windows
-            if is_windows():
-                base = drive if drive.endswith('\\') else drive + '\\'
-            else:
-                base = drive if drive.endswith('/') else drive + '/'
-            return os.path.join(base, folder)
+            from modules.platform_utils import normalize_path
+            return normalize_path(os.path.join(drive, folder))
         return None
 
     def append_log(self, text):
@@ -2225,6 +2306,8 @@ print('')
     def _set_controls_enabled(self, enabled):
         self.scan_btn.setEnabled(enabled)
         self.install_env_btn.setEnabled(enabled)
+        self.browse_conda_btn.setEnabled(enabled)
+        self.global_scan_btn.setEnabled(enabled)
         self.version_combo.setEnabled(enabled)
         self.python_combo.setEnabled(enabled)
         self.pytorch_combo.setEnabled(enabled)

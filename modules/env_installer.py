@@ -7,7 +7,9 @@ from .platform_utils import (
     is_windows, is_linux, is_macos,
     get_miniconda_download_url, get_anaconda_download_url,
     get_git_download_url, get_default_install_path,
-    get_conda_exe_name, get_conda_scripts_dir, get_home_dir
+    get_conda_exe_name, get_conda_scripts_dir, get_home_dir,
+    normalize_path, is_admin, run_as_admin,
+    save_conda_install_path
 )
 
 try:
@@ -269,6 +271,8 @@ def install_conda(conda_type='miniconda', version=None, install_path=None, progr
     if install_path is None:
         install_path = get_default_install_path(conda_type)
 
+    install_path = normalize_path(install_path)
+
     log(f'=== 开始安装 {display_name} ({version}) ===')
     log(f'安装路径: {install_path}')
 
@@ -316,15 +320,66 @@ def install_conda(conda_type='miniconda', version=None, install_path=None, progr
                 log(f'创建安装目录: {parent_dir}')
             except Exception as e:
                 log(f'⚠  创建目录失败: {e}')
+                return False, None
+
+        writable = False
+        try:
+            if os.path.exists(install_path):
+                test_file = os.path.join(install_path, '.write_test_' + str(os.getpid()))
+            else:
+                test_file = os.path.join(parent_dir, '.write_test_' + str(os.getpid()))
+            with open(test_file, 'w') as f:
+                f.write('test')
+            os.unlink(test_file)
+            writable = True
+            log(f'✅ 安装目录可写: {parent_dir}')
+        except Exception as e:
+            if is_windows():
+                log(f'⚠  安装目录写入测试失败: {e}')
+                log('注意：Windows 系统盘可能需要管理员权限，安装程序会自动请求权限')
+                log('将继续尝试安装，如果失败请更换安装路径')
+                writable = True
+            else:
+                log(f'❌ 安装目录不可写: {e}')
+                log('请更换安装路径或检查权限')
+                return False, None
+
+        if not is_windows():
+            try:
+                import shutil
+                total, used, free = shutil.disk_usage(parent_dir)
+                free_gb = free / (1024 ** 3)
+                required_gb = 5 if conda_type == 'anaconda' else 2
+                log(f'💾 磁盘剩余空间: {free_gb:.1f} GB (需要约 {required_gb} GB)')
+                if free_gb < required_gb:
+                    log(f'❌ 磁盘空间不足！至少需要 {required_gb} GB')
+                    return False, None
+            except Exception as e:
+                log(f'⚠  无法检测磁盘空间: {e}')
+        else:
+            try:
+                import shutil
+                total, used, free = shutil.disk_usage(parent_dir)
+                free_gb = free / (1024 ** 3)
+                required_gb = 5 if conda_type == 'anaconda' else 2
+                log(f'💾 磁盘剩余空间: {free_gb:.1f} GB (需要约 {required_gb} GB)')
+                if free_gb < required_gb:
+                    log(f'❌ 磁盘空间不足！至少需要 {required_gb} GB')
+                    return False, None
+            except Exception as e:
+                log(f'⚠  无法检测磁盘空间: {e}')
 
         if is_windows():
             cmd = f'"{tmp_path}" /S /AddToPath=0 /RegisterPython=0 /D={install_path}'
             timeout = 1200 if conda_type == 'anaconda' else 600
         else:
             os.chmod(tmp_path, 0o755)
+            log(f'安装脚本: {tmp_path}')
+            log(f'目标路径: {install_path}')
             cmd = f'bash "{tmp_path}" -b -p "{install_path}"'
             timeout = 1200 if conda_type == 'anaconda' else 600
 
+        log(f'执行安装命令... (超时: {timeout}秒)')
         result = subprocess.run(
             cmd,
             capture_output=True,
@@ -335,16 +390,60 @@ def install_conda(conda_type='miniconda', version=None, install_path=None, progr
             timeout=timeout
         )
 
+        log(f'安装进程结束，返回码: {result.returncode}')
+
         if _check_conda_installed(install_path):
             log(f'✅ {display_name} 安装成功！')
+            conda_exe_path = os.path.join(install_path, 'Scripts' if is_windows() else 'bin', 'conda.exe' if is_windows() else 'conda')
+            if os.path.exists(conda_exe_path):
+                save_conda_install_path(conda_exe_path)
+                log(f'📋 已保存 Conda 安装路径: {conda_exe_path}')
             return True, install_path
         else:
+            if is_windows() and not is_admin() and not writable:
+                log(f'⚠️  普通权限安装失败，正在尝试以管理员权限安装...')
+                log('📢 即将弹出 UAC 权限请求，请点击"是"继续')
+                time.sleep(1)
+
+                admin_result = run_as_admin(cmd, wait=True, timeout=timeout)
+
+                if admin_result['returncode'] == 0 and _check_conda_installed(install_path):
+                    log(f'✅ {display_name} 安装成功！（管理员权限）')
+                    conda_exe_path = os.path.join(install_path, 'Scripts' if is_windows() else 'bin', 'conda.exe' if is_windows() else 'conda')
+                    if os.path.exists(conda_exe_path):
+                        save_conda_install_path(conda_exe_path)
+                        log(f'📋 已保存 Conda 安装路径: {conda_exe_path}')
+                    return True, install_path
+                else:
+                    log(f'❌ {display_name} 管理员权限安装也失败')
+                    log(f'返回码: {admin_result["returncode"]}')
+                    if admin_result['stderr']:
+                        log(f'错误信息: {admin_result["stderr"]}')
+                    return False, None
+
             log(f'❌ {display_name} 安装失败')
             log(f'返回码: {result.returncode}')
+            all_output = ''
             if result.stdout:
-                log(f'标准输出:\n{result.stdout[-1000:]}')
+                all_output += '=== 标准输出 ===\n' + result.stdout
             if result.stderr:
-                log(f'错误输出:\n{result.stderr[-1000:]}')
+                all_output += '\n=== 错误输出 ===\n' + result.stderr
+            if all_output:
+                log(f'安装日志:\n{all_output[-2000:]}')
+            else:
+                log('安装进程没有任何输出')
+
+            if os.path.exists(install_path):
+                log(f'⚠  安装目录已存在但 conda 不可用，目录内容:')
+                try:
+                    items = os.listdir(install_path)
+                    for item in items[:20]:
+                        log(f'  - {item}')
+                    if len(items) > 20:
+                        log(f'  ... 共 {len(items)} 项')
+                except Exception as e:
+                    log(f'  无法列出目录: {e}')
+
             return False, None
     except subprocess.TimeoutExpired:
         log('❌ 安装超时')

@@ -2,10 +2,10 @@
 
 
 a = Analysis(
-    ['main.py'],
+    ['e:\\程序\\一键安装 yolov\\main.py'],
     pathex=[],
     binaries=[],
-    datas=[('repos.yaml', '.'), ('modules', 'modules'), ('assets', 'assets')],
+    datas=[('repos.yaml', '.'), ('assets', 'assets'), ('modules', 'modules')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -35,5 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='assets/app.ico',
+    icon=['e:\\程序\\一键安装 yolov\\assets\\app.ico'],
 )

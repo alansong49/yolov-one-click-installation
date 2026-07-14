@@ -2,7 +2,8 @@ import os
 import subprocess
 import sys
 from .platform_utils import (
-    get_conda_search_paths, get_gpu_check_cmd, is_windows, is_linux
+    get_conda_search_paths, get_gpu_check_cmd, is_windows, is_linux,
+    load_conda_install_path
 )
 
 
@@ -43,6 +44,16 @@ def find_conda():
     log_lines = []
     log_lines.append('[环境扫描] 正在查找 Conda 安装路径...')
 
+    saved_path = load_conda_install_path()
+    if saved_path:
+        log_lines.append(f'[环境扫描] 找到保存的 Conda 路径: {saved_path}')
+        verify = run_command(f'"{saved_path}" --version')
+        if verify['success']:
+            log_lines.append(f'[环境扫描] Conda 版本验证通过: {verify["stdout"]}')
+            return saved_path, log_lines
+        else:
+            log_lines.append(f'[环境扫描] 保存的路径验证失败，尝试扫描其他位置')
+
     common_paths = get_conda_search_paths()
 
     for path in common_paths:
@@ -55,15 +66,18 @@ def find_conda():
             else:
                 log_lines.append(f'[环境扫描] Conda 路径存在但无法执行: {verify["stderr"]}')
 
-    # Linux/macOS 下额外扫描 home 目录
     if not is_windows():
         home = os.path.expanduser('~')
-        if os.path.isdir(home):
+        search_bases = [home, '/opt', '/usr/local']
+        conda_keywords = ['conda', 'anaconda', 'miniconda', 'miniforge', 'mambaforge']
+        for base in search_bases:
+            if not os.path.isdir(base):
+                continue
             try:
-                for item in os.listdir(home):
+                for item in os.listdir(base):
                     item_lower = item.lower()
-                    if any(keyword in item_lower for keyword in ['conda', 'anaconda', 'miniconda', 'miniforge', 'mambaforge']):
-                        full_path = os.path.join(home, item, 'bin', 'conda')
+                    if any(kw in item_lower for kw in conda_keywords):
+                        full_path = os.path.join(base, item, 'bin', 'conda')
                         if os.path.exists(full_path):
                             log_lines.append(f'[环境扫描] 在 {full_path} 找到 Conda')
                             verify = run_command(f'"{full_path}" --version')
@@ -160,6 +174,101 @@ def scan_environment():
         'has_gpu': has_gpu,
         'log': '\n'.join(log_lines)
     }
+
+
+def global_scan_conda():
+    log_lines = []
+    log_lines.append('=' * 60)
+    log_lines.append('开始全局扫描 Conda')
+    log_lines.append('=' * 60)
+
+    conda_path = None
+
+    if is_windows():
+        log_lines.append('[全局扫描] 正在扫描所有磁盘分区...')
+        import string
+        import ctypes
+        DRIVE_FIXED = 3
+        drives = []
+        for letter in string.ascii_uppercase:
+            drive = f'{letter}:'
+            if os.path.exists(drive):
+                try:
+                    drive_type = ctypes.windll.kernel32.GetDriveTypeW(f'{drive}\\')
+                    if drive_type == DRIVE_FIXED:
+                        drives.append(drive)
+                    else:
+                        log_lines.append(f'[全局扫描] 跳过非本地磁盘: {drive}')
+                except Exception:
+                    drives.append(drive)
+
+        log_lines.append(f'[全局扫描] 发现 {len(drives)} 个本地磁盘: {", ".join(drives)}')
+
+        for drive in drives:
+            log_lines.append(f'[全局扫描] 正在扫描 {drive}...')
+            try:
+                result = subprocess.run(
+                    f'where /R {drive} conda.exe',
+                    capture_output=True,
+                    text=True,
+                    encoding='utf-8',
+                    errors='replace',
+                    shell=True,
+                    timeout=120
+                )
+                if result.returncode == 0 and result.stdout:
+                    paths = result.stdout.strip().split('\n')
+                    for path in paths:
+                        path = path.strip()
+                        if path and os.path.exists(path):
+                            verify = run_command(f'"{path}" --version')
+                            if verify['success']:
+                                log_lines.append(f'[全局扫描] ✅ 在 {path} 找到 Conda')
+                                log_lines.append(f'[全局扫描] Conda 版本: {verify["stdout"]}')
+                                conda_path = path
+                                break
+                    if conda_path:
+                        break
+            except subprocess.TimeoutExpired:
+                log_lines.append(f'[全局扫描] ⚠️  {drive} 扫描超时，跳过')
+            except Exception as e:
+                log_lines.append(f'[全局扫描] ⚠️  扫描 {drive} 时出错: {e}')
+    else:
+        log_lines.append('[全局扫描] 正在扫描 Linux 系统...')
+        try:
+            result = subprocess.run(
+                'find / -path /proc -prune -o -path /sys -prune -o -path /dev -prune -o -path /run -prune -o -name conda -type f -print 2>/dev/null',
+                capture_output=True,
+                text=True,
+                encoding='utf-8',
+                errors='replace',
+                shell=True,
+                timeout=300
+            )
+            if result.returncode == 0 and result.stdout:
+                paths = result.stdout.strip().split('\n')
+                for path in paths:
+                    path = path.strip()
+                    if path and os.path.exists(path):
+                        verify = run_command(f'"{path}" --version')
+                        if verify['success']:
+                            log_lines.append(f'[全局扫描] ✅ 在 {path} 找到 Conda')
+                            log_lines.append(f'[全局扫描] Conda 版本: {verify["stdout"]}')
+                            conda_path = path
+                            break
+        except subprocess.TimeoutExpired:
+            log_lines.append('[全局扫描] ⚠️  扫描超时')
+        except Exception as e:
+            log_lines.append(f'[全局扫描] ⚠️  扫描时出错: {e}')
+
+    log_lines.append('=' * 60)
+    if conda_path:
+        log_lines.append('全局扫描完成 - 找到 Conda！')
+    else:
+        log_lines.append('全局扫描完成 - 未找到 Conda')
+    log_lines.append('=' * 60)
+
+    return conda_path, '\n'.join(log_lines)
 
 
 if __name__ == '__main__':
