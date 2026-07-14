@@ -258,6 +258,52 @@ def _check_conda_installed(install_path):
     return os.path.exists(conda_path)
 
 
+def _configure_linux_shell(conda_path, log=None):
+    home = get_home_dir()
+    shell_configs = [
+        os.path.join(home, '.bashrc'),
+        os.path.join(home, '.bash_profile'),
+        os.path.join(home, '.zshrc'),
+    ]
+
+    conda_bin_dir = os.path.dirname(conda_path)
+    path_line = f'export PATH="{conda_bin_dir}:$PATH"'
+
+    for config_file in shell_configs:
+        if os.path.exists(config_file):
+            try:
+                with open(config_file, 'r', encoding='utf-8') as f:
+                    content = f.read()
+
+                if path_line not in content:
+                    with open(config_file, 'a', encoding='utf-8') as f:
+                        f.write(f'\n# YOLO-AutoInstaller: Added Conda to PATH\n{path_line}\n')
+                    if log:
+                        log(f'📝 已更新 {config_file}')
+            except Exception as e:
+                if log:
+                    log(f'⚠  更新 {config_file} 失败: {e}')
+
+    init_line = f'eval "$({conda_path} shell.$(basename "$SHELL") hook)"'
+    for config_file in shell_configs:
+        if os.path.exists(config_file):
+            try:
+                with open(config_file, 'r', encoding='utf-8') as f:
+                    content = f.read()
+
+                if init_line not in content and 'conda init' not in content:
+                    with open(config_file, 'a', encoding='utf-8') as f:
+                        f.write(f'\n# YOLO-AutoInstaller: Conda initialization\n{init_line}\n')
+                    if log:
+                        log(f'📝 已添加 Conda 初始化到 {config_file}')
+            except Exception as e:
+                if log:
+                    log(f'⚠  添加初始化到 {config_file} 失败: {e}')
+
+    if log:
+        log('💡 注意：重启终端或执行 `source ~/.bashrc` 后即可使用 conda 命令')
+
+
 def install_conda(conda_type='miniconda', version=None, install_path=None, progress_log=None):
     def log(msg):
         if progress_log:
@@ -410,6 +456,10 @@ def install_conda(conda_type='miniconda', version=None, install_path=None, progr
             if os.path.exists(conda_exe_path):
                 save_conda_install_path(conda_exe_path)
                 log(f'📋 已保存 Conda 安装路径: {conda_exe_path}')
+
+            if not is_windows():
+                _configure_linux_shell(conda_exe_path, log)
+
             return True, install_path
         else:
             if is_windows() and not is_admin() and not writable:
@@ -425,13 +475,17 @@ def install_conda(conda_type='miniconda', version=None, install_path=None, progr
                     if os.path.exists(conda_exe_path):
                         save_conda_install_path(conda_exe_path)
                         log(f'📋 已保存 Conda 安装路径: {conda_exe_path}')
-                    return True, install_path
-                else:
-                    log(f'❌ {display_name} 管理员权限安装也失败')
-                    log(f'返回码: {admin_result["returncode"]}')
-                    if admin_result['stderr']:
-                        log(f'错误信息: {clean_output(admin_result["stderr"])}')
-                    return False, None
+
+                        if not is_windows():
+                            _configure_linux_shell(conda_exe_path, log)
+
+                        return True, install_path
+                    else:
+                        log(f'❌ {display_name} 管理员权限安装也失败')
+                        log(f'返回码: {admin_result["returncode"]}')
+                        if admin_result['stderr']:
+                            log(f'错误信息: {clean_output(admin_result["stderr"])}')
+                        return False, None
 
             log(f'❌ {display_name} 安装失败')
             log(f'返回码: {result.returncode}')
