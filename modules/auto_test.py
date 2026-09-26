@@ -1,5 +1,4 @@
 import os
-import sys
 import base64
 
 
@@ -22,7 +21,6 @@ class AutoTester:
     def _create_test_image(self):
         try:
             from PIL import Image
-            import io
             img = Image.new('RGB', (640, 480), color=(73, 109, 137))
             test_img_path = os.path.join(self.workspace_dir, 'test_image.jpg')
             img.save(test_img_path, 'JPEG')
@@ -78,7 +76,7 @@ class AutoTester:
         elif detect_script:
             yield from self._test_detect_script(version_info, env_name, detect_script)
         else:
-            yield from self._log(f'未找到检测脚本 (detect.py/predict.py)，测试基础环境...')
+            yield from self._log('未找到检测脚本 (detect.py/predict.py)，测试基础环境...')
             yield from self._test_basic_env(env_name, version_info)
 
     def _test_basic_env(self, env_name, version_info):

@@ -4,6 +4,7 @@ import subprocess
 import tempfile
 import time
 import re
+import shutil
 
 
 def clean_output(text):
@@ -13,12 +14,13 @@ def clean_output(text):
 
 
 from .platform_utils import (
-    is_windows, is_linux, is_macos,
+    is_windows, is_linux,
     get_miniconda_download_url, get_anaconda_download_url,
-    get_git_download_url, get_default_install_path,
+    get_default_install_path,
     get_conda_exe_name, get_conda_scripts_dir, get_home_dir,
     normalize_path, is_admin, run_as_admin,
-    save_conda_install_path
+    save_conda_install_path,
+    load_conda_install_path, get_conda_search_paths,
 )
 
 try:
@@ -58,9 +60,6 @@ def _build_miniconda_urls(version='latest'):
     base_urls = [
         ('清华镜像', 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda'),
         ('中科大镜像', 'https://mirrors.ustc.edu.cn/anaconda/miniconda'),
-        ('阿里镜像', 'https://mirrors.aliyun.com/anaconda/miniconda'),
-        ('华为云镜像', 'https://mirrors.huaweicloud.com/anaconda/miniconda'),
-        ('南京大学镜像', 'https://mirrors.nju.edu.cn/anaconda/miniconda'),
         ('官方源', 'https://repo.anaconda.com/miniconda'),
     ]
     return [(name, f'{base}/{filename}') for name, base in base_urls]
@@ -69,11 +68,8 @@ def _build_miniconda_urls(version='latest'):
 def _build_anaconda_urls(version='2024.10-1'):
     filename = get_anaconda_download_url(version)
     base_urls = [
+        ('北京大学镜像', 'https://mirrors.pku.edu.cn/anaconda/archive'),
         ('清华镜像', 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive'),
-        ('中科大镜像', 'https://mirrors.ustc.edu.cn/anaconda/archive'),
-        ('阿里镜像', 'https://mirrors.aliyun.com/anaconda/archive'),
-        ('华为云镜像', 'https://mirrors.huaweicloud.com/anaconda/archive'),
-        ('南京大学镜像', 'https://mirrors.nju.edu.cn/anaconda/archive'),
         ('官方源', 'https://repo.anaconda.com/archive'),
     ]
     return [(name, f'{base}/{filename}') for name, base in base_urls]
@@ -312,13 +308,11 @@ def install_conda(conda_type='miniconda', version=None, install_path=None, progr
 
     if conda_type == 'anaconda':
         display_name = 'Anaconda3'
-        default_folder = 'Anaconda3'
         if version is None:
             version = ANACONDA_VERSIONS[0]
         url_list = _build_anaconda_urls(version)
     else:
         display_name = 'Miniconda3'
-        default_folder = 'Miniconda3'
         if version is None:
             version = MINICONDA_VERSIONS[0]
         url_list = _build_miniconda_urls(version)
@@ -339,15 +333,39 @@ def install_conda(conda_type='miniconda', version=None, install_path=None, progr
         log(f'❌ 当前平台不支持自动安装 {display_name}')
         return False, None
 
-    log(f'正在下载 {display_name} 安装包（多个下载源自动切换）...')
+    # 先检查本地安装包
+    local_installer = None
+    is_temp_file = True
+    try:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        candidates = [
+            os.path.join(os.path.dirname(sys.executable), f'{display_name}-installer.exe'),
+            os.path.join(base_dir, '..', 'assets', f'{display_name}-installer.exe'),
+            os.path.join(base_dir, '..', 'assets', f'{display_name}-installer.sh'),
+        ]
+        for p in candidates:
+            p = os.path.normpath(p)
+            if os.path.exists(p):
+                local_installer = p
+                log(f'发现本地 {display_name} 安装包: {p}')
+                break
+    except Exception:
+        pass
 
-    if is_windows():
-        suffix = '.exe'
+    if local_installer:
+        tmp_path = local_installer
+        is_temp_file = False
+        log('使用本地安装包进行安装...')
     else:
-        suffix = '.sh'
+        log(f'正在下载 {display_name} 安装包（多个下载源自动切换）...')
 
-    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
-        tmp_path = tmp.name
+        if is_windows():
+            suffix = '.exe'
+        else:
+            suffix = '.sh'
+
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+            tmp_path = tmp.name
 
     try:
         def progress_cb(percent, downloaded, total_size):
@@ -358,7 +376,7 @@ def install_conda(conda_type='miniconda', version=None, install_path=None, progr
         success = download_file_with_fallback(url_list, tmp_path, progress_cb, log)
         if not success:
             log(f'❌ 下载 {display_name} 失败，所有下载源均不可用')
-            log(f'请手动下载安装：')
+            log('请手动下载安装：')
             for source_name, url in url_list:
                 log(f'  {source_name}: {url}')
             return False, None
@@ -378,6 +396,7 @@ def install_conda(conda_type='miniconda', version=None, install_path=None, progr
                 return False, None
 
         writable = False
+        write_test_failed = False
         try:
             if os.path.exists(install_path):
                 test_file = os.path.join(install_path, '.write_test_' + str(os.getpid()))
@@ -390,6 +409,7 @@ def install_conda(conda_type='miniconda', version=None, install_path=None, progr
             log(f'✅ 安装目录可写: {parent_dir}')
         except Exception as e:
             if is_windows():
+                write_test_failed = True
                 log(f'⚠  安装目录写入测试失败: {e}')
                 log('注意：Windows 系统盘可能需要管理员权限，安装程序会自动请求权限')
                 log('将继续尝试安装，如果失败请更换安装路径')
@@ -462,8 +482,8 @@ def install_conda(conda_type='miniconda', version=None, install_path=None, progr
 
             return True, install_path
         else:
-            if is_windows() and not is_admin() and not writable:
-                log(f'⚠️  普通权限安装失败，正在尝试以管理员权限安装...')
+            if is_windows() and not is_admin() and (not writable or write_test_failed):
+                log('⚠️  普通权限安装失败，正在尝试以管理员权限安装...')
                 log('📢 即将弹出 UAC 权限请求，请点击"是"继续')
                 time.sleep(1)
 
@@ -500,7 +520,7 @@ def install_conda(conda_type='miniconda', version=None, install_path=None, progr
                 log('安装进程没有任何输出')
 
             if os.path.exists(install_path):
-                log(f'⚠  安装目录已存在但 conda 不可用，目录内容:')
+                log('⚠  安装目录已存在但 conda 不可用，目录内容:')
                 try:
                     items = os.listdir(install_path)
                     for item in items[:20]:
@@ -518,10 +538,11 @@ def install_conda(conda_type='miniconda', version=None, install_path=None, progr
         log(f'❌ 安装异常: {e}')
         return False, None
     finally:
-        try:
-            os.unlink(tmp_path)
-        except:
-            pass
+        if is_temp_file:
+            try:
+                os.unlink(tmp_path)
+            except:
+                pass
 
 
 def install_miniconda(install_path=None, progress_log=None):
@@ -606,6 +627,36 @@ def _install_git_linux(log):
     return False
 
 
+def _find_conda_exe(log=None):
+    """查找 conda 可执行文件路径。
+
+    优先使用已保存的安装记录和常见安装路径，而不是仅依赖 PATH
+    （Anaconda 刚装好时当前进程的 PATH 可能尚未刷新）。
+    """
+    # 1. 已保存的安装记录
+    saved = load_conda_install_path()
+    if saved and os.path.exists(saved):
+        if log:
+            log(f'  找到已保存的 conda 路径: {saved}')
+        return saved
+
+    # 2. 常见安装路径
+    for p in get_conda_search_paths():
+        if os.path.exists(p):
+            if log:
+                log(f'  在常见路径找到 conda: {p}')
+            return p
+
+    # 3. PATH（最后才检查）
+    found = shutil.which('conda')
+    if found:
+        if log:
+            log(f'  在 PATH 中找到 conda: {found}')
+        return found
+
+    return None
+
+
 def install_git(version=None, progress_log=None):
     def log(msg):
         if progress_log:
@@ -615,7 +666,7 @@ def install_git(version=None, progress_log=None):
     if version is None:
         version = GIT_VERSIONS[0]
 
-    log(f'=== 开始安装 Git ===')
+    log('=== 开始安装 Git ===')
 
     git_ok, git_ver = _check_git_installed()
     if git_ok:
@@ -641,98 +692,453 @@ def install_git(version=None, progress_log=None):
         log('请手动安装 Git 并确保在 PATH 中可用')
         return False
 
-    log('正在下载 Git 安装包（多个下载源自动切换）...')
+    # 1) winget（若系统已安装，这是最干净的方式）
+    log('尝试使用 winget 安装 Git...')
+    winget_exe = _find_winget_exe()
+    if winget_exe and _winget_install_git(log, winget_exe):
+        return True
 
-    with tempfile.NamedTemporaryFile(suffix='.exe', delete=False) as tmp:
-        tmp_path = tmp.name
+    # 2) 国内镜像下载官方 Git 完整安装包（阿里 npmmirror CDN，速度快、无需 winget）
+    log('winget 不可用，从国内镜像（npmmirror）下载官方 Git 安装包...')
+    if _install_git_from_npmmirror(log):
+        return True
+
+    # 3) 用户要求：没有 winget 就自动安装 winget，再用 winget 安装 Git
+    log('镜像安装失败，尝试自动安装 winget 后再安装 Git...')
+    new_winget = _install_winget(log)
+    if new_winget and _winget_install_git(log, new_winget):
+        return True
+
+    # 4) 通过 Conda 安装（优先 defaults 走已配置的国内镜像，失败再试 tuna conda-forge）
+    log('尝试通过 Conda 安装 Git...')
+    if _install_git_conda(log):
+        return True
+
+    # 5) 最后兜底：检查本地是否放了 Git 安装包
+    if _install_git_local(log):
+        return True
+
+    log('❌ Git 自动安装失败，请手动安装 Git 后重试')
+    log('官网下载: https://git-scm.com/download/win')
+    return False
+
+
+def _find_winget_exe():
+    """查找 winget 可执行文件路径（可能在 WindowsApps 中但不在 PATH 里）。"""
+    # 1. PATH
+    found = shutil.which('winget')
+    if found:
+        return found
+    # 2. WindowsApps 常见路径
+    home = get_home_dir()
+    candidates = [
+        os.path.join(home, 'AppData', 'Local', 'Microsoft', 'WindowsApps', 'winget.exe'),
+        os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Microsoft', 'WindowsApps', 'winget.exe'),
+    ]
+    for p in candidates:
+        if p and os.path.exists(p):
+            return p
+    return None
+
+
+def _augment_process_path(dirpath):
+    """把目录加入当前进程 PATH（子进程随后继承）。目录存在才添加。"""
+    if dirpath and os.path.isdir(dirpath):
+        cur = os.environ.get('PATH', '')
+        parts = cur.split(os.pathsep) if cur else []
+        if os.path.normpath(dirpath) not in [os.path.normpath(p) for p in parts]:
+            os.environ['PATH'] = dirpath + (os.pathsep + cur if cur else '')
+        return True
+    return False
+
+
+def _ps_quote(path):
+    """PowerShell 单引号字符串转义。"""
+    return "'" + path.replace("'", "''") + "'"
+
+
+def _download_file(url, target, log, expect_size=None, expect_sha256=None,
+                   retries=2, label='文件'):
+    """流式下载文件，支持大小/SHA256 校验与失败重试。
+
+    返回 True/False。
+    """
+    import hashlib
+    import requests
+
+    for attempt in range(retries + 1):
+        try:
+            if attempt:
+                log(f'  第 {attempt + 1} 次尝试下载 {label}...')
+            with requests.get(url, stream=True, timeout=(30, 300)) as r:
+                r.raise_for_status()
+                sha = hashlib.sha256()
+                total = 0
+                tmp_target = target + '.part'
+                with open(tmp_target, 'wb') as f:
+                    for chunk in r.iter_content(chunk_size=1024 * 256):
+                        if chunk:
+                            f.write(chunk)
+                            sha.update(chunk)
+                            total += len(chunk)
+                os.replace(tmp_target, target)
+
+            if expect_size is not None and total != expect_size:
+                log(f'  {label}大小不符: {total} != {expect_size}')
+                if attempt < retries:
+                    continue
+                _safe_remove(target)
+                return False
+            if expect_sha256 and sha.hexdigest().lower() != expect_sha256.lower():
+                log(f'  {label}SHA256 校验失败，文件可能已损坏')
+                if attempt < retries:
+                    continue
+                _safe_remove(target)
+                return False
+            return True
+        except Exception as e:
+            log(f'  下载{label}异常: {e}')
+            if attempt >= retries:
+                _safe_remove(target)
+                return False
+    return False
+
+
+def _safe_remove(path):
+    try:
+        if path and os.path.exists(path):
+            os.remove(path)
+    except Exception:
+        pass
+
+
+def _check_windows_build(min_build=17763):
+    """返回 (build号, 是否满足最低版本)。检测失败时返回 (0, True) 不阻塞安装。"""
+    try:
+        out = subprocess.run(
+            'powershell -NoProfile -Command "[System.Environment]::OSVersion.Version.Build"',
+            capture_output=True, text=True, shell=True, timeout=15
+        )
+        if out.returncode == 0:
+            build = int(out.stdout.strip())
+            return build, build >= min_build
+    except Exception:
+        pass
+    return 0, True
+
+
+def _install_winget(log):
+    """自动安装 winget（App Installer），成功返回 winget 路径，失败返回 None。
+
+    从 GitHub 下载最新 .msixbundle（约 205MB）与依赖包 zip，
+    经 SHA256 完整性校验后通过 PowerShell 安装。需要 Windows 10 1809+。
+    """
+    import tempfile
+    import zipfile
+
+    log('  正在尝试自动安装 winget...')
+
+    build, ok = _check_windows_build()
+    if not ok:
+        log(f'  Windows 版本过低 (build {build})，winget 需要 1809+，跳过')
+        return None
+
+    # 获取最新 release 信息
+    try:
+        import requests
+        resp = requests.get(
+            'https://api.github.com/repos/microsoft/winget-cli/releases/latest', timeout=30)
+        resp.raise_for_status()
+        release = resp.json()
+    except Exception as e:
+        log(f'  获取 winget 最新版本失败: {e}')
+        return None
+
+    assets = {a['name']: a for a in release.get('assets', [])}
+    msix_asset = assets.get('Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle')
+    deps_asset = assets.get('DesktopAppInstaller_Dependencies.zip')
+
+    if not msix_asset:
+        log('  未找到 winget 安装包')
+        return None
+
+    msix_digest = (msix_asset.get('digest') or '').replace('sha256:', '') or None
+    log(f"  winget 版本: {release.get('tag_name')}，安装包约 "
+        f"{msix_asset['size'] // 1048576} MB")
+
+    tmpdir = tempfile.mkdtemp(prefix='winget_')
+    msix_path = os.path.join(tmpdir, 'winget.msixbundle')
+    deps_path = os.path.join(tmpdir, 'deps.zip')
+    deps_dir = os.path.join(tmpdir, 'deps')
 
     try:
-        def progress_cb(percent, downloaded, total_size):
-            mb_downloaded = downloaded / (1024 * 1024)
-            mb_total = total_size / (1024 * 1024)
-            log(f'下载进度: {percent:.1f}% ({mb_downloaded:.1f}MB / {mb_total:.1f}MB)')
+        # 下载主安装包（带 sha256 校验，失败重试）
+        if not _download_file(
+                msix_asset['browser_download_url'], msix_path, log,
+                expect_size=msix_asset['size'], expect_sha256=msix_digest,
+                retries=2, label='winget 安装包'):
+            log('  winget 安装包下载/校验失败')
+            return None
 
-        git_urls = _build_git_urls(version)
-        success = download_file_with_fallback(git_urls, tmp_path, progress_cb, log)
-        if not success:
-            log('下载 Git 失败，所有下载源均不可用')
-            log('尝试使用 winget 安装...')
-            winget_ok = _install_git_winget(log)
-            if winget_ok:
-                return True
-            log('❌ Git 自动安装失败')
-            log('请手动下载安装：')
-            for source_name, url in git_urls:
-                log(f'  {source_name}: {url}')
-            return False
+        # 下载并解压依赖（VCLibs、Microsoft.UI.Xaml 等）
+        dep_files = []
+        if deps_asset:
+            log('  正在下载 winget 依赖包（约 90MB）...')
+            deps_digest = (deps_asset.get('digest') or '').replace('sha256:', '') or None
+            if _download_file(
+                    deps_asset['browser_download_url'], deps_path, log,
+                    expect_size=deps_asset['size'], expect_sha256=deps_digest,
+                    retries=2, label='winget 依赖包'):
+                with zipfile.ZipFile(deps_path) as z:
+                    z.extractall(deps_dir)
+                # 只取 x64 的 appx/msix 依赖
+                for root_dir, _dirs, files in os.walk(deps_dir):
+                    rel = os.path.relpath(root_dir, deps_dir).lower()
+                    if 'x64' not in rel and 'neutral' not in rel:
+                        continue
+                    for fn in files:
+                        if fn.lower().endswith(('.appx', '.appxbundle', '.msix')):
+                            dep_files.append(os.path.join(root_dir, fn))
+            else:
+                log('  依赖包下载失败，将尝试直接安装主包')
 
-        log('正在安装 Git（静默安装，可能需要几分钟）...')
+        # PowerShell 安装
+        log('  正在安装 winget...')
+        ps_parts = [f'Add-AppxPackage -Path {_ps_quote(msix_path)} -ForceApplicationShutdown']
+        if dep_files:
+            arr = ','.join(_ps_quote(p) for p in dep_files)
+            ps_parts.append(f'-DependencyPaths @({arr})')
+        ps_cmd = ' '.join(ps_parts)
 
-        cmd = f'"{tmp_path}" /VERYSILENT /NORESTART /NOCANCEL /SP- /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS /COMPONENTS="icons,ext\\reg\\shellhere,assoc,assoc_sh"'
         result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            encoding='utf-8',
-            errors='replace',
-            shell=True,
-            timeout=600
+            ['powershell', '-NoProfile', '-Command', ps_cmd],
+            capture_output=True, text=True, timeout=180
         )
 
-        time.sleep(2)
+        if result.returncode != 0:
+            err = (result.stderr or result.stdout or '').strip()
+            log(f'  winget 安装失败: {err[-400:]}')
+            return None
 
-        git_ok2, git_ver2 = _check_git_installed()
-        if git_ok2:
-            log(f'✅ Git 安装成功: {git_ver2}')
-            return True
-        else:
-            log('安装完成但 git 命令未找到，可能需要重启后生效')
-            log('尝试在常见路径查找...')
-            common_paths = [
-                r'C:\Program Files\Git\bin\git.exe',
-                r'C:\Program Files (x86)\Git\bin\git.exe',
-                os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Programs', 'Git', 'bin', 'git.exe'),
-            ]
-            for p in common_paths:
-                if os.path.exists(p):
-                    log(f'在 {p} 找到 Git，安装成功')
-                    return True
-            log('❌ Git 安装验证失败')
-            return False
-    except subprocess.TimeoutExpired:
-        log('❌ 安装超时')
-        return False
+        time.sleep(2)
+        winget_path = _find_winget_exe()
+        if winget_path:
+            log(f'  ✅ winget 安装成功: {winget_path}')
+            return winget_path
+        log('  安装命令已完成，但未检测到 winget（可能需要重新打开程序）')
+        return None
+
     except Exception as e:
-        log(f'❌ 安装异常: {e}')
-        return False
+        log(f'  winget 自动安装异常: {e}')
+        return None
     finally:
+        import shutil as _sh
         try:
-            os.unlink(tmp_path)
-        except:
+            _sh.rmtree(tmpdir, ignore_errors=True)
+        except Exception:
             pass
 
 
-def _install_git_winget(log):
+def _git_cmd_dirs():
+    """Git 安装后可能的 cmd 目录（用户级 / 系统级）。"""
+    home = get_home_dir()
+    pf = os.environ.get('ProgramFiles', r'C:\Program Files')
+    return [
+        os.path.join(home, 'AppData', 'Local', 'Programs', 'Git', 'cmd'),
+        os.path.join(pf, 'Git', 'cmd'),
+    ]
+
+
+def _refresh_and_verify_git(log):
+    """安装后把已知 Git 目录加入进程 PATH，并验证 git 可用。"""
+    for d in _git_cmd_dirs():
+        if os.path.isdir(d):
+            _augment_process_path(d)
+    ok, ver = _check_git_installed()
+    if ok:
+        log(f'✅ Git 安装成功: {ver}')
+    return ok
+
+
+def _winget_install_git(log, winget_exe):
+    """使用指定 winget 安装 Git。返回 True/False。"""
+    log(f'使用 winget 安装 Git... ({winget_exe})')
     try:
-        log('尝试使用 winget 安装 Git...')
         result = subprocess.run(
-            'winget install --id Git.Git -e --accept-source-agreements --accept-package-agreements --silent',
-            capture_output=True,
-            text=True,
-            encoding='utf-8',
-            errors='replace',
-            shell=True,
-            timeout=600
+            f'"{winget_exe}" install --id Git.Git -e '
+            '--accept-source-agreements --accept-package-agreements --silent',
+            capture_output=True, text=True, encoding='utf-8', errors='replace',
+            shell=True, timeout=900
         )
         if result.returncode == 0:
-            log('✅ winget Git 安装完成')
-            return True
-        else:
-            log(f'winget 安装失败: {result.stderr[-300:] if result.stderr else result.stdout[-300:]}')
-            return False
-    except Exception as e:
-        log(f'winget 安装异常: {e}')
+            return _refresh_and_verify_git(log)
+        err = result.stderr or result.stdout or ''
+        log(f'winget 安装 Git 失败: {err[-400:]}')
         return False
+    except Exception as e:
+        log(f'winget 安装 Git 异常: {e}')
+        return False
+
+
+def _install_git_from_npmmirror(log):
+    """从阿里 npmmirror 国内镜像下载官方 Git for Windows 完整安装包并静默安装。"""
+    import tempfile
+    import requests
+
+    base = 'https://registry.npmmirror.com/-/binary/git-for-windows/'
+    try:
+        data = requests.get(base, timeout=30).json()
+    except Exception as e:
+        log(f'  获取镜像版本列表失败: {e}')
+        return False
+
+    # 选最新正式版 vX.Y.Z.windows.N
+    candidates = []
+    for item in data:
+        m = re.fullmatch(r'v(\d+)\.(\d+)\.(\d+)\.windows\.(\d+)/?', item.get('name', ''))
+        if m:
+            candidates.append((tuple(int(x) for x in m.groups()), item['name'].rstrip('/')))
+    if not candidates:
+        log('  镜像中未找到正式版 Git')
+        return False
+    candidates.sort()
+    ver_name = candidates[-1][1]
+
+    # 读取该版本文件列表，找完整安装包 Git-*-64-bit.exe（排除 MinGit）
+    try:
+        files = requests.get(f'{base}{ver_name}/', timeout=30).json()
+    except Exception as e:
+        log(f'  获取版本文件列表失败: {e}')
+        return False
+
+    installer = None
+    for f in files:
+        fn = f.get('name', '')
+        if re.fullmatch(r'Git-[\d.]+-64-bit\.exe', fn):
+            installer = f
+            break
+    if not installer:
+        log(f'  未找到 {ver_name} 的 64 位完整安装包')
+        return False
+
+    log(f"  最新版本: {ver_name}，安装包约 {installer['size'] // 1048576} MB")
+    tmpdir = tempfile.mkdtemp(prefix='git_install_')
+    installer_path = os.path.join(tmpdir, 'Git-installer.exe')
+
+    try:
+        if not _download_file(
+                installer['url'], installer_path, log,
+                expect_size=installer['size'], retries=2, label='Git 安装包'):
+            log('  Git 安装包下载失败')
+            return False
+
+        # 先按当前用户静默安装（无需管理员权限）
+        log('  正在静默安装 Git（当前用户）...')
+        common_flags = ['/VERYSILENT', '/NORESTART', '/NOCANCEL', '/SP-',
+                        '/CLOSEAPPLICATIONS', '/RESTARTAPPLICATIONS']
+        try:
+            _ = subprocess.run([installer_path] + common_flags + ['/CURRENTUSER'],
+                               capture_output=True, timeout=900)
+        except Exception as e:
+            log(f'  安装执行异常: {e}')
+
+        if _refresh_and_verify_git(log):
+            return True
+
+        # 当前用户安装未成功：尝试系统级安装（若程序是管理员可静默成功，否则会弹 UAC）
+        log('  当前用户安装未生效，尝试系统级安装（可能弹出权限请求，请允许）...')
+        try:
+            subprocess.run([installer_path] + common_flags + ['/ALLUSERS'],
+                           capture_output=True, timeout=900)
+        except Exception as e:
+            log(f'  系统级安装异常: {e}')
+        return _refresh_and_verify_git(log)
+
+    except Exception as e:
+        log(f'  镜像安装 Git 异常: {e}')
+        return False
+    finally:
+        import shutil as _sh
+        _sh.rmtree(tmpdir, ignore_errors=True)
+
+
+def _install_git_conda(log):
+    """通过 conda 安装 Git。
+
+    1) defaults 通道（.condarc 通常已配置国内镜像，且 main 通道自带 git）
+    2) 失败再用清华 conda-forge 镜像
+    conda 版 git 位于 <conda根>\\Library\\bin，会加入当前进程 PATH。
+    """
+    conda_exe = _find_conda_exe(log)
+    if not conda_exe:
+        log('  未找到 conda 可执行文件')
+        return False
+
+    # conda_exe = <root>\Scripts\conda.exe
+    root = os.path.dirname(os.path.dirname(os.path.abspath(conda_exe)))
+
+    command_sets = [
+        [conda_exe, 'install', '-y', 'git'],
+        [conda_exe, 'install', '-y', '--override-channels',
+         '-c', 'https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/',
+         'git'],
+    ]
+
+    for i, cmd in enumerate(command_sets):
+        label = 'defaults 通道' if i == 0 else '清华 conda-forge 镜像'
+        log(f'  使用 conda {label} 安装 git（元数据较大，请耐心等待）...')
+        try:
+            res = subprocess.run(cmd, capture_output=True, text=True, timeout=900)
+        except Exception as e:
+            log(f'  conda 安装异常: {e}')
+            continue
+
+        if res.returncode != 0:
+            combined = (res.stdout or '') + (res.stderr or '')
+            log(f'  {label}安装失败: {combined[-500:]}')
+            continue
+
+        # conda 版 git 不进系统 PATH，直接定位并加入当前进程 PATH
+        lib_bin = os.path.join(root, 'Library', 'bin')
+        git_exe = os.path.join(lib_bin, 'git.exe')
+        if os.path.exists(git_exe):
+            _augment_process_path(lib_bin)
+            ok, ver = _check_git_installed()
+            if ok:
+                log(f'✅ Git 通过 Conda 安装成功: {ver}')
+                log('  提示：conda 版 Git 仅在本程序内自动可用，'
+                    '如需在普通终端使用请手动添加环境变量')
+                return True
+        log('  conda 报告安装完成，但未找到 git.exe')
+
+    return False
+
+
+def _install_git_local(log):
+    """兜底：从 exe 同级 / assets 目录查找用户自行放置的 Git 安装包。"""
+    possible_paths = [
+        os.path.join(os.path.dirname(sys.executable), 'Git-installer.exe'),
+    ]
+    if getattr(sys, 'frozen', False):
+        base = getattr(sys, '_MEIPASS', os.path.dirname(sys.executable))
+        possible_paths.append(os.path.join(base, 'assets', 'Git-installer.exe'))
+    else:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        possible_paths.append(os.path.join(base_dir, '..', 'assets', 'Git-installer.exe'))
+
+    for p in possible_paths:
+        p = os.path.normpath(p)
+        if os.path.exists(p):
+            log(f'发现本地 Git 安装包: {p}，尝试静默安装...')
+            try:
+                subprocess.run(
+                    f'"{p}" /VERYSILENT /NORESTART /NOCANCEL /SP-',
+                    shell=True, timeout=900)
+                if _refresh_and_verify_git(log):
+                    return True
+            except Exception as e:
+                log(f'本地安装包尝试失败: {e}')
+    return False
 
 
 def install_all(conda_type='miniconda', conda_version=None, git_version=None, conda_install_path=None, progress_log=None):

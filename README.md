@@ -9,7 +9,7 @@ YOLO AutoInstaller 是一款基于 PyQt6 开发的 YOLO 全版本一键部署 GU
 | 类别         | 技术                         | 版本    | 说明             |
 | ---------- | -------------------------- | ----- | -------------- |
 | **开发语言**   | Python                     | 3.10+ | 主程序开发语言        |
-| **GUI 框架** | PyQt6                      | 6.x   | 图形界面框架         |
+| **GUI 框架** | PyQt6                       | 6.x   | 图形界面框架         |
 | **配置管理**   | PyYAML                     | -     | YAML 配置文件解析    |
 | **打包工具**   | PyInstaller                | -     | 打包为单文件可执行程序    |
 | **环境管理**   | Conda (Miniconda/Anaconda) | -     | Python 虚拟环境管理  |
@@ -71,7 +71,15 @@ YOLO AutoInstaller 是一款基于 PyQt6 开发的 YOLO 全版本一键部署 GU
 - 支持多个环境快速切换
 - 一键在编辑器中打开项目
 
-### 7. 跨平台支持
+### 7. 断点恢复
+
+- 部署中断后自动保存进度，下次启动可选择继续
+- 支持 HTTP Range 断点续传，下载不重复
+- SHA256 文件完整性校验，损坏自动重下
+- 关闭时可选择最小化到后台或保留进度
+- 系统托盘后台运行，完成自动恢复窗口
+
+### 8. 跨平台支持
 
 - ✅ Windows 10/11
 - ✅ Linux (Ubuntu / CentOS / Fedora / Arch / openSUSE 等)
@@ -97,11 +105,15 @@ YOLO AutoInstaller 是一款基于 PyQt6 开发的 YOLO 全版本一键部署 GU
 │   ├── env_scan.py            # 系统环境检测
 │   ├── env_installer.py       # 环境安装器
 │   ├── conda_handler.py       # Conda 操作封装
-│   ├── yolo_installer.py      # YOLO 部署安装
+│   ├── yolo_installer.py      # YOLO 部署安装（支持断点恢复）
+│   ├── task_state.py          # 断点状态管理（新增）
 │   ├── auto_test.py           # 自动化测试
 │   └── editor_deploy.py       # 编辑器部署配置
+├── docs/                      # 文档目录（新增）
+│   ├── 断点恢复-开发文档.md    # 断点恢复技术实现文档
+│   └── 断点恢复-用户操作指南.md # 断点恢复用户使用说明
 ├── dist/                      # 打包输出目录
-│   └── YOLO_AutoInstaller.exe # Windows 可执行文件
+│   └── YOLO_AutoInstaller_2.0.exe # Windows 可执行文件（v2.0）
 └── venv/                      # 程序自身的虚拟环境
 ```
 

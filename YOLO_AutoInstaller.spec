@@ -2,10 +2,10 @@
 
 
 a = Analysis(
-    ['e:\\程序\\一键安装 yolov\\main.py'],
+    ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('repos.yaml', '.'), ('assets', 'assets'), ('modules', 'modules')],
+    datas=[('repos.yaml', '.'), ('assets', 'assets')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -22,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='YOLO_AutoInstaller',
+    name='YOLO_AutoInstaller_2.0',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

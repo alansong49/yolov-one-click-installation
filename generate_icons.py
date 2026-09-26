@@ -57,7 +57,7 @@ def generate_ico():
     ico_path = os.path.join(OUTPUT_DIR, 'app.ico')
     pixmap = icon.pixmap(QSize(256, 256))
     pixmap.save(ico_path, 'ICO')
-    print(f'✅ 生成: app.ico')
+    print('✅ 生成: app.ico')
     return ico_path
 
 
@@ -66,7 +66,7 @@ def generate_main_png():
     img = svg_to_image(SVG_PATH, 256)
     png_path = os.path.join(OUTPUT_DIR, 'app.png')
     img.save(png_path, 'PNG')
-    print(f'✅ 生成: app.png (256x256)')
+    print('✅ 生成: app.png (256x256)')
     return png_path
 
 
@@ -75,7 +75,7 @@ def generate_svg_copy():
     import shutil
     dest = os.path.join(OUTPUT_DIR, 'app.svg')
     shutil.copy2(SVG_PATH, dest)
-    print(f'✅ 复制: app.svg')
+    print('✅ 复制: app.svg')
     return dest
 
 

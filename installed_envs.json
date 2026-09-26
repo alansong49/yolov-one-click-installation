@@ -1,0 +1,9 @@
+{
+  "yolov5_env": {
+    "name": "yolov5_env",
+    "version_name": "YOLOv5 (官方原版)",
+    "path": "C:\\Anaconda3\\envs\\yolov5_env",
+    "workspace": "C:\\yolo_workspace",
+    "install_time": "2026-09-24 01:41:07"
+  }
+}

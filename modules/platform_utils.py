@@ -390,7 +390,7 @@ def is_admin():
         return False
 
 
-def run_as_admin(cmd, wait=True, timeout=None):
+def run_as_admin(cmd, wait=True, timeout=None, raw_params=None):
     if not is_windows():
         return {'success': False, 'stdout': '', 'stderr': '非 Windows 平台不支持 UAC 提权', 'returncode': -1}
 
@@ -399,9 +399,7 @@ def run_as_admin(cmd, wait=True, timeout=None):
         from ctypes import wintypes
 
         SEE_MASK_NOCLOSEPROCESS = 0x00000040
-        SEE_MASK_FLAG_NO_UI = 0x00000400
         SW_HIDE = 0
-        SW_SHOWNORMAL = 1
 
         class SHELLEXECUTEINFO(ctypes.Structure):
             _fields_ = [
@@ -433,7 +431,11 @@ def run_as_admin(cmd, wait=True, timeout=None):
         sei.hwnd = None
         sei.lpVerb = 'runas'
 
-        if isinstance(cmd, list):
+        if raw_params is not None:
+            # 直接使用调用方提供的原始参数字符串（含复杂引号/& 等，避免二次包装）
+            exe = cmd if isinstance(cmd, str) else cmd[0]
+            params = raw_params
+        elif isinstance(cmd, list):
             exe = cmd[0]
             params = ' '.join(f'"{c}"' for c in cmd[1:])
         else:

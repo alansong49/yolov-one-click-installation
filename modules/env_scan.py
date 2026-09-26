@@ -1,6 +1,5 @@
 import os
 import subprocess
-import sys
 from .platform_utils import (
     get_conda_search_paths, get_gpu_check_cmd, is_windows, is_linux,
     load_conda_install_path
@@ -52,7 +51,7 @@ def find_conda():
             log_lines.append(f'[环境扫描] Conda 版本验证通过: {verify["stdout"]}')
             return saved_path, log_lines
         else:
-            log_lines.append(f'[环境扫描] 保存的路径验证失败，尝试扫描其他位置')
+            log_lines.append('[环境扫描] 保存的路径验证失败，尝试扫描其他位置')
 
     common_paths = get_conda_search_paths()
 

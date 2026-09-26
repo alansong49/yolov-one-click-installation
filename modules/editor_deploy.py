@@ -127,7 +127,7 @@ def configure_vscode(project_path, python_path, env_name=''):
     try:
         with open(settings_path, 'w', encoding='utf-8') as f:
             json.dump(settings, f, ensure_ascii=False, indent=4)
-        yield {'type': 'success', 'message': f'✅ 已写入 VSCode 配置: .vscode/settings.json'}
+        yield {'type': 'success', 'message': '✅ 已写入 VSCode 配置: .vscode/settings.json'}
     except Exception as e:
         yield {'type': 'error', 'message': f'❌ 写入配置失败: {e}'}
         return
@@ -224,7 +224,7 @@ def configure_pycharm(project_path, python_path, env_name=''):
         # 创建 .iml 文件
         iml_path = os.path.join(idea_dir, f'{module_name}.iml')
         if not os.path.exists(iml_path):
-            iml_content = f'''<?xml version="1.0" encoding="UTF-8"?>
+            iml_content = '''<?xml version="1.0" encoding="UTF-8"?>
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
@@ -242,7 +242,7 @@ def configure_pycharm(project_path, python_path, env_name=''):
             yield {'type': 'success', 'message': f'✅ 已创建模块文件: .idea/{module_name}.iml'}
 
         # 创建 workspace.xml（记录解释器路径提示）
-        workspace_xml = f'''<?xml version="1.0" encoding="UTF-8"?>
+        workspace_xml = '''<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="PythonCompatibilityInspectionAdvertiser">
     <option name="version" value="3" />
