@@ -1339,8 +1339,15 @@ class AnnotationCrashWatchThread(QThread):
             return
 
         self.started_ok.emit(p.pid)
-        p.wait()
+        # 可中断轮询等待：主窗口关闭时可安全停止，子进程不受影响继续运行
+        while not self.isInterruptionRequested():
+            rc = p.poll()
+            if rc is not None:
+                break
+            self.msleep(300)
         logf.close()
+        if self.isInterruptionRequested():
+            return
         tail = self._read_tail(self.log_path)
         if p.returncode == 0:
             self.normal_exit.emit()
@@ -2244,6 +2251,7 @@ class MainWindow(QMainWindow):
         self._anno_scan_thread = None
         self._anno_install_thread = None
         self._anno_watchers = []          # 标注工具守护线程，运行期间持有引用
+        self._anno_running = set()        # 正在运行的标注工具，防止重复启动
         self._relaunch_after_repair = None  # 修复完成后自动重启的工具名
         self._editor_deploy_thread = None
         # 操作页 val/predict/export/video 线程，运行期间持有引用，
@@ -4109,6 +4117,10 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, '提示', '没有成功打开任何编辑器。\n请确保已选择编辑器且编辑器已安装。')
 
     def _launch_annotation_tool(self, tool_name):
+        if tool_name in self._anno_running:
+            QMessageBox.information(
+                self, '提示', f'{tool_name} 已经在运行中，请勿重复启动。')
+            return
         if not self.env_result or not self.env_result['conda_path']:
             QMessageBox.warning(self, '提示', '未检测到 Conda 环境。')
             return
@@ -4262,10 +4274,13 @@ print('')
                 lambda rc, tail, lp: self._on_anno_crashed(
                     tool_name, env_name, rc, tail, lp))
             watcher.normal_exit.connect(
-                lambda: self.append_log(f'ℹ️ {tool_name} 已正常关闭'))
+                lambda tn=tool_name: (
+                    self._anno_running.discard(tn),
+                    self.append_log(f'ℹ️ {tn} 已正常关闭')))
             watcher.finished.connect(
                 lambda w=watcher: self._remove_anno_watcher(w))
             self._anno_watchers.append(watcher)
+            self._anno_running.add(tool_name)
             watcher.start()
 
         except Exception as e:
@@ -4306,6 +4321,7 @@ print('')
         return ('未识别的错误，请查看完整日志', False)
 
     def _on_anno_start_failed(self, tool_name, env_name, rc, tail):
+        self._anno_running.discard(tool_name)
         self.append_log(f'❌ {tool_name} 启动失败，返回码: {rc}')
         cause, can_repair = self._anno_diagnosis(tail)
         self.append_log(f'   病因: {cause}')
@@ -4325,6 +4341,7 @@ print('')
             self._repair_annotation_tool(tool_name, env_name)
 
     def _on_anno_crashed(self, tool_name, env_name, rc, tail, log_path):
+        self._anno_running.discard(tool_name)
         self.append_log(f'💥 {tool_name} 运行中意外退出，返回码: {rc}')
         cause, can_repair = self._anno_diagnosis(tail)
         self.append_log(f'   病因: {cause} | 日志: {log_path}')
@@ -4976,13 +4993,16 @@ print('')
         env_busy = bool(self.env_install_thread and self.env_install_thread.isRunning())
         training_busy = bool(
             getattr(self, 'train_thread', None) and self.train_thread.isRunning())
+        repair_busy = bool(self._anno_install_thread
+                          and self._anno_install_thread.isRunning())
 
-        if not (deploy_busy or env_busy or training_busy):
+        if not (deploy_busy or env_busy or training_busy or repair_busy):
+            self._stop_anno_watchers()
             event.accept()
             return
 
         dlg = CloseConfirmDialog(
-            deploy_busy=deploy_busy, env_busy=env_busy,
+            deploy_busy=deploy_busy or repair_busy, env_busy=env_busy,
             training_busy=training_busy, parent=self)
         dlg.exec()
 
@@ -4990,12 +5010,30 @@ print('')
             event.ignore()
             self._minimize_to_tray()
         elif dlg.choice == CloseConfirmDialog.CLOSE_KEEP:
+            if repair_busy:
+                # 修复执行中退出会销毁 QThread 导致硬崩溃，阻止关闭
+                QMessageBox.information(
+                    self, '请稍候',
+                    '标注工具正在修复中，请等待修复完成后再关闭（约 1 分钟）。')
+                event.ignore()
+                return
+            # 安全停止守护线程；标注工具子进程继续独立运行
+            self._stop_anno_watchers()
             # 进度已通过状态文件持续保存，直接退出即可
             if deploy_busy:
                 self.append_log('程序已关闭，部署进度已保存，下次启动可继续')
             event.accept()
         else:
             event.ignore()
+
+    def _stop_anno_watchers(self):
+        """中断并等待全部标注守护线程结束，避免 QThread 运行中被销毁而崩溃。"""
+        for w in list(self._anno_watchers):
+            w.requestInterruption()
+        for w in list(self._anno_watchers):
+            if not w.wait(2000):
+                self.append_log('⚠️ 标注守护线程未能在 2 秒内结束，继续等待...')
+                w.wait(3000)
 
     def _minimize_to_tray(self):
         """隐藏主窗口到系统托盘，任务在后台继续执行。"""
