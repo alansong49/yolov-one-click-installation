@@ -1172,10 +1172,63 @@ def _env_python_run(python_exe, code, timeout=60):
     return r.returncode, (r.stdout or '') + (r.stderr or '')
 
 
+def _patch_labelimg_canvas(python_exe, log_cb):
+    """修补环境内 LabelImg 的 libs/canvas.py：
+
+    新版 PyQt5 对 drawLine 做严格类型检查，不接受 float，
+    而旧版 LabelImg 绘制十字准线时直接传入 QPointF 的 x()/y()（float），
+    导致 paintEvent 抛 "arguments did not match any overloaded call" 崩溃。
+
+    补丁：将 prevPoint/prev_point 的 x()/y() 包 int()，幂等可重复执行。
+    """
+    patch_code = r'''
+import os, re, sys
+try:
+    import labelImg
+except ImportError:
+    print("PATCH_SKIP: labelImg not installed"); sys.exit(0)
+path = os.path.join(os.path.dirname(labelImg.__file__), "libs", "canvas.py")
+if not os.path.exists(path):
+    print("PATCH_SKIP: canvas.py not found"); sys.exit(0)
+src = open(path, "r", encoding="utf-8").read()
+if "YOLO_AI_CANVAS_PATCH" in src:
+    print("PATCH_ALREADY"); sys.exit(0)
+new = src
+# camelCase（1.8.6 等新版）与 snake_case（旧版）两种写法都兼容
+for name in ("prevPoint", "prev_point"):
+    new = re.sub(
+        r"p\.drawLine\(self\." + name + r"\.x\(\), 0, self\." + name + r"\.x\(\), self\.pixmap\.height\(\)\)",
+        "p.drawLine(int(self." + name + ".x()), 0, int(self." + name + ".x()), self.pixmap.height())  # YOLO_AI_CANVAS_PATCH",
+        new)
+    new = re.sub(
+        r"p\.drawLine\(0, self\." + name + r"\.y\(\), self\.pixmap\.width\(\), self\." + name + r"\.y\(\)\)",
+        "p.drawLine(0, int(self." + name + ".y()), self.pixmap.width(), int(self." + name + ".y()))  # YOLO_AI_CANVAS_PATCH",
+        new)
+if new != src:
+    open(path, "w", encoding="utf-8").write(new)
+    print("PATCH_OK")
+else:
+    print("PATCH_NOT_FOUND")
+'''
+    rc, out = _env_python_run(python_exe, patch_code, timeout=60)
+    if 'PATCH_OK' in out:
+        log_cb('✅ 已修补 canvas.py 十字准线 float 崩溃点')
+        return True
+    if 'PATCH_ALREADY' in out:
+        log_cb('ℹ️ canvas.py 补丁已存在，跳过')
+        return True
+    if 'PATCH_SKIP' in out:
+        log_cb('⚠️ 未找到 canvas.py，跳过补丁')
+        return True
+    log_cb(f'⚠️ canvas.py 未匹配到补丁点（可能版本结构不同）: {out.strip()[-200:]}')
+    return True
+
+
 def apply_annotation_fixes(conda, env_name, tool_name, log_cb):
     """标注工具安装后兼容性加固。
 
-    LabelImg：升级兼容版 PyQt5 → 导入冒烟测试 → numpy 2.x 不兼容时自动降级。
+    LabelImg：升级兼容版 PyQt5 → 修补 canvas.py float 崩溃点
+              → 导入冒烟测试 → numpy 2.x 不兼容时自动降级。
     LabelMe ：opencv-python（自带 Qt 插件冲突主因）替换为 headless 版 → 冒烟测试。
 
     返回 (是否成功, 失败原因)。
@@ -1189,12 +1242,15 @@ def apply_annotation_fixes(conda, env_name, tool_name, log_cb):
         return False, f'找不到环境 {env_name} 的 Python 解释器'
 
     if tool_name == 'labelImg':
-        log_cb('🔧 加固 [1/3]: 升级兼容版 PyQt5（LabelImg 依赖 Qt5）...')
+        log_cb('🔧 加固 [1/4]: 升级兼容版 PyQt5（LabelImg 依赖 Qt5）...')
         for line in conda.pip_install(env_name, 'PyQt5', upgrade=True,
                                       index_url=TUNA):
             log_cb(line)
 
-        log_cb('🔧 加固 [2/3]: LabelImg 导入冒烟测试...')
+        log_cb('🔧 加固 [2/4]: 修补 canvas.py（新版 PyQt5 拒收 float 坐标）...')
+        _patch_labelimg_canvas(python_exe, log_cb)
+
+        log_cb('🔧 加固 [3/4]: LabelImg 导入冒烟测试...')
         rc, out = _env_python_run(
             python_exe,
             'from labelImg.labelImg import main; print("SMOKE_OK")')
@@ -1202,7 +1258,7 @@ def apply_annotation_fixes(conda, env_name, tool_name, log_cb):
             # numpy 2.x 移除了 np.float/np.int 等别名，旧版 LabelImg 会崩
             if 'numpy' in out and ("has no attribute" in out or "np.float" in out
                                    or "np.int" in out):
-                log_cb('🔧 加固 [3/3]: 检测到 numpy 2.x 不兼容，降级 numpy<2 ...')
+                log_cb('🔧 加固 [4/4]: 检测到 numpy 2.x 不兼容，降级 numpy<2 ...')
                 for line in conda.pip_install(env_name, 'numpy<2',
                                               index_url=TUNA):
                     log_cb(line)
@@ -1211,7 +1267,7 @@ def apply_annotation_fixes(conda, env_name, tool_name, log_cb):
                     'from labelImg.labelImg import main; print("SMOKE_OK")')
             if 'SMOKE_OK' not in out:
                 return False, f'LabelImg 冒烟测试失败:\n{out.strip()[-500:]}'
-        log_cb('✅ LabelImg 冒烟测试通过')
+        log_cb('✅ LabelImg 冒烟测试通过（已含 canvas.py 补丁）')
         return True, ''
 
     if tool_name == 'labelme':
@@ -4304,6 +4360,9 @@ print('')
     def _anno_diagnosis(error_msg):
         """根据错误文本返回 (病因说明, 是否可自动修复)。"""
         low = error_msg.lower()
+        if ('did not match any overloaded call' in low
+                or ("unexpected type" in low and "float" in low)):
+            return ('新版 PyQt5 严格类型检查与旧版 LabelImg 不兼容（float 坐标）', True)
         if 'cv2/qt/plugins' in error_msg or (
                 'opencv' in low and ('qt' in low or 'plugin' in low)):
             return ('OpenCV 自带的 Qt 插件与 PyQt 冲突', True)
