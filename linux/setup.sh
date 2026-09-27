@@ -18,7 +18,8 @@ if command -v apt-get &> /dev/null; then
         libxcb-image0 libxcb-keysyms1 libxcb-randr0 \
         libxcb-render-util0 libxcb-shape0 libxcb-sync1 \
         libxcb-xfixes0 libxcb-xinerama0 libxcb-xkb1 \
-        libxkbcommon-x11-0
+        libxcb-cursor0 libxkbcommon-x11-0 libnss3 \
+        libwayland-client0 libwayland-cursor0 libwayland-egl1
 elif command -v yum &> /dev/null; then
     PKG_MANAGER="yum"
     echo "📦 检测到 CentOS/RHEL 系统 (yum)"

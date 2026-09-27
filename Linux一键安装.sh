@@ -278,7 +278,10 @@ if ! check_cmd python3; then
             libxcb-image0 libxcb-keysyms1 libxcb-randr0 \
             libxcb-render-util0 libxcb-shape0 libxcb-sync1 \
             libxcb-xfixes0 libxcb-xinerama0 libxcb-xkb1 \
-            libxkbcommon-x11-0
+            libxcb-cursor0 libxkbcommon-x11-0 libnss3 \
+            libxcomposite1 libxdamage1 libxrandr2 libxtst6 \
+            libwayland-client0 libwayland-cursor0 libwayland-egl1 \
+            qt6-qpa-plugins
     elif check_cmd yum; then
         info "检测到 CentOS/RHEL 系统"
         sudo yum install -y python3 python3-pip \
@@ -662,17 +665,9 @@ fi
 
 step_title "步骤 3/3：创建桌面快捷方式"
 
-# 确定执行路径
-if [ "$BUILD_SUCCESS" = true ] && [ -f "$PROJECT_DIR/dist/$APP_NAME" ]; then
-    EXEC_PATH="$PROJECT_DIR/dist/$APP_NAME"
-    RUN_MODE="打包版"
-elif [ -f "$PROJECT_DIR/$APP_NAME" ]; then
-    EXEC_PATH="$PROJECT_DIR/$APP_NAME"
-    RUN_MODE="打包版"
-else
-    EXEC_PATH="python3 $PROJECT_DIR/main.py"
-    RUN_MODE="源码版"
-fi
+# 确定执行路径：统一走带环境检测的 run.sh（自动选择打包版/源码版）
+EXEC_PATH="bash $PROJECT_DIR/linux/run.sh"
+RUN_MODE="run.sh 自动选择（打包版优先）"
 
 info "运行方式: $RUN_MODE"
 info "执行命令: $EXEC_PATH"
@@ -750,16 +745,8 @@ echo ""
 if [[ ! "$start_now" =~ ^[Nn]$ ]]; then
     info "正在启动 YOLO AutoInstaller..."
     sleep 1
-
-    if [ "$BUILD_SUCCESS" = true ] && [ -f "$PROJECT_DIR/dist/$APP_NAME" ]; then
-        nohup "$PROJECT_DIR/dist/$APP_NAME" > /dev/null 2>&1 &
-    else
-        cd "$PROJECT_DIR"
-        nohup python3 main.py > /dev/null 2>&1 &
-    fi
-
-    sleep 2
-    success "程序已启动！"
+    # 通过带环境检测的 run.sh 启动；失败会打印明确原因，不再静默
+    bash "$PROJECT_DIR/linux/run.sh"
 fi
 
 echo ""

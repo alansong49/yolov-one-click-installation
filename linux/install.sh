@@ -16,26 +16,9 @@ echo ""
 echo "📁 项目目录: $PROJECT_DIR"
 echo ""
 
-# 查找可执行文件
-if [ -f "$PROJECT_DIR/dist/$APP_NAME" ]; then
-    EXEC_PATH="$PROJECT_DIR/dist/$APP_NAME"
-    echo "✅ 找到打包好的可执行文件: $EXEC_PATH"
-elif [ -f "$PROJECT_DIR/$APP_NAME" ]; then
-    EXEC_PATH="$PROJECT_DIR/$APP_NAME"
-    echo "✅ 找到可执行文件: $EXEC_PATH"
-elif command -v "$APP_NAME" &> /dev/null; then
-    EXEC_PATH="$APP_NAME"
-    echo "✅ 找到系统路径中的可执行文件: $(which $APP_NAME)"
-else
-    echo "⚠️  未找到打包好的可执行文件"
-    echo "   将使用源码运行方式 (python3 main.py)"
-    if [ -f "$PROJECT_DIR/main.py" ]; then
-        EXEC_PATH="python3 $PROJECT_DIR/main.py"
-    else
-        echo "❌ 未找到 main.py，无法创建快捷方式"
-        exit 1
-    fi
-fi
+# 执行路径统一走带环境检测的 run.sh（自动选择打包版/源码版，失败有可读提示）
+EXEC_PATH="bash $PROJECT_DIR/linux/run.sh"
+echo "✅ 快捷方式将通过 run.sh 启动（打包版优先，自动检测 X11/Wayland）"
 
 echo ""
 echo "📝 生成桌面快捷方式..."
