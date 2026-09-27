@@ -19,6 +19,116 @@ while [ -h "$SOURCE" ]; do
 done
 PROJECT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 
+# ============================================================
+# 自举（Self-Bootstrap）
+# 若只下载了本脚本、缺少项目主体文件（main.py / modules / linux 等），
+# 自动从 GitHub 下载完整项目到规范安装目录，再重新执行本脚本。
+# 这样单独一个 .sh 文件即可完成全部安装（与 Windows exe 模式一致）。
+# ============================================================
+
+if [ ! -f "$PROJECT_DIR/main.py" ]; then
+    clear
+    echo ""
+    echo "============================================================"
+    echo "  YOLO AutoInstaller - 检测到缺少项目文件，开始自动获取"
+    echo "============================================================"
+    echo ""
+    echo "  当前脚本目录未找到 main.py（说明只下载了本安装脚本）。"
+    echo ""
+
+    INSTALL_DIR="${YOLO_INSTALL_DIR:-$HOME/yolo-autoinstaller}"
+
+    # 若之前已下载过完整项目，直接跳转执行
+    if [ -f "$INSTALL_DIR/main.py" ] && [ -f "$INSTALL_DIR/linux/run.sh" ]; then
+        echo "  ✅ 发现已下载的完整项目: $INSTALL_DIR"
+        echo "  → 直接启动该副本"
+        exec bash "$INSTALL_DIR/Linux一键安装.sh" "$@"
+    fi
+
+    TMP_TGZ="$(mktemp 2>/dev/null || echo /tmp/yolo_dl_$$).tar.gz"
+
+    # 下载源（国内加速代理优先，官方兜底）
+    TARBALL_URLS=(
+        "https://ghfast.top/https://codeload.github.com/alansong49/yolov-one-click-installation/tar.gz/refs/heads/main"
+        "https://gh-proxy.com/https://codeload.github.com/alansong49/yolov-one-click-installation/tar.gz/refs/heads/main"
+        "https://codeload.github.com/alansong49/yolov-one-click-installation/tar.gz/refs/heads/main"
+    )
+    GIT_URLS=(
+        "https://ghfast.top/https://github.com/alansong49/yolov-one-click-installation.git"
+        "https://gh-proxy.com/https://github.com/alansong49/yolov-one-click-installation.git"
+        "https://github.com/alansong49/yolov-one-click-installation.git"
+    )
+
+    DOWNLOAD_OK=false
+
+    # 方式 1：下载 tar.gz（无需 git）
+    echo "  [1/2] 尝试下载项目压缩包..."
+    for url in "${TARBALL_URLS[@]}"; do
+        echo "       尝试: ${url:0:70}..."
+        if command -v curl >/dev/null 2>&1; then
+            curl -fL --connect-timeout 10 --retry 2 -o "$TMP_TGZ" "$url" 2>/dev/null
+        elif command -v wget >/dev/null 2>&1; then
+            wget -q --timeout=20 -t 2 -O "$TMP_TGZ" "$url" 2>/dev/null
+        fi
+        # 校验是否为有效 gzip 且大于 10KB
+        if [ -s "$TMP_TGZ" ] && gzip -t "$TMP_TGZ" 2>/dev/null && \
+           [ "$(stat -c%s "$TMP_TGZ" 2>/dev/null || echo 0)" -gt 10240 ]; then
+            echo "       ✅ 下载成功"
+            mkdir -p "$INSTALL_DIR"
+            TMP_EXTRACT="$(mktemp -d 2>/dev/null || echo /tmp/yolo_extract_$$)"
+            tar xzf "$TMP_TGZ" -C "$TMP_EXTRACT" 2>/dev/null
+            EXTRACTED="$(find "$TMP_EXTRACT" -maxdepth 1 -mindepth 1 -type d | head -n 1)"
+            if [ -n "$EXTRACTED" ] && [ -f "$EXTRACTED/main.py" ]; then
+                # 清空目标目录残留（仅在我们自管的安装目录内）
+                rm -rf "$INSTALL_DIR" 2>/dev/null
+                mkdir -p "$(dirname "$INSTALL_DIR")"
+                mv "$EXTRACTED" "$INSTALL_DIR"
+                rm -rf "$TMP_EXTRACT" "$TMP_TGZ"
+                DOWNLOAD_OK=true
+                break
+            fi
+            rm -rf "$TMP_EXTRACT"
+        fi
+        rm -f "$TMP_TGZ"
+    done
+
+    # 方式 2：git clone（tar.gz 全部失败时）
+    if [ "$DOWNLOAD_OK" != true ] && command -v git >/dev/null 2>&1; then
+        echo ""
+        echo "  [2/2] 压缩包下载失败，尝试 git clone..."
+        for url in "${GIT_URLS[@]}"; do
+            echo "       尝试: ${url:0:70}..."
+            rm -rf "$INSTALL_DIR" 2>/dev/null
+            if git clone --depth 1 "$url" "$INSTALL_DIR" 2>/dev/null && \
+               [ -f "$INSTALL_DIR/main.py" ]; then
+                echo "       ✅ 克隆成功"
+                DOWNLOAD_OK=true
+                break
+            fi
+        done
+    fi
+
+    if [ "$DOWNLOAD_OK" != true ]; then
+        echo ""
+        echo "  ❌ 自动下载失败。可能原因：网络不通或下载工具缺失。"
+        echo ""
+        echo "  请手动处理后重试："
+        echo "    1. 确保网络可访问 GitHub；"
+        echo "    2. 手动下载完整项目: https://github.com/alansong49/yolov-one-click-installation"
+        echo "       解压后把本脚本放入项目根目录再执行；"
+        echo "    3. 或配置代理后重试。"
+        echo ""
+        rm -f "$TMP_TGZ"
+        exit 1
+    fi
+
+    echo ""
+    echo "  ✅ 完整项目已就绪: $INSTALL_DIR"
+    echo "  → 继续执行安装流程..."
+    sleep 1
+    exec bash "$INSTALL_DIR/Linux一键安装.sh" "$@"
+fi
+
 APP_NAME="YOLO_AutoInstaller_2.0"
 SKIP_PIP_INSTALL=false
 
