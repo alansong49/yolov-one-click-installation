@@ -633,6 +633,7 @@ if [ "$HAS_PYINSTALLER" = true ]; then
             --clean \
             --add-data "repos.yaml:." \
             --add-data "modules:modules" \
+            --add-data "assets:assets" \
             "main.py"
 
         if [ $? -eq 0 ]; then
