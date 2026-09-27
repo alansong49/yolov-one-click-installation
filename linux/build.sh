@@ -3,7 +3,7 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
-APP_NAME="YOLO_AutoInstaller"
+APP_NAME="YOLO_AutoInstaller_2.0"
 MAIN_FILE="$PROJECT_DIR/main.py"
 
 echo "=========================================="

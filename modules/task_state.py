@@ -41,7 +41,14 @@ class TaskStateManager:
 
     def __init__(self):
         self.primary_path = os.path.join(get_runtime_dir(), STATE_FILENAME)
-        appdata = os.environ.get('APPDATA') or os.path.expanduser('~')
+        # 兜底路径：Windows 用 %APPDATA%，Linux/macOS 用 XDG 数据目录 ~/.local/share
+        appdata = os.environ.get('APPDATA')
+        if not appdata:
+            xdg = os.environ.get('XDG_DATA_HOME')
+            if xdg:
+                appdata = xdg
+            else:
+                appdata = os.path.join(os.path.expanduser('~'), '.local', 'share')
         self.fallback_path = os.path.join(
             appdata, 'YOLO_AutoInstaller', STATE_FILENAME)
         self.path = self.primary_path

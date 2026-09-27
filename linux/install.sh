@@ -3,8 +3,9 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
-APP_NAME="YOLO_AutoInstaller"
-DESKTOP_FILE="$APP_NAME.desktop"
+APP_NAME="YOLO_AutoInstaller_2.0"
+DESKTOP_NAME="YOLO_AutoInstaller"
+DESKTOP_FILE="$DESKTOP_NAME.desktop"
 EXEC_PATH=""
 ICON_PATH="$PROJECT_DIR/assets/app.png"
 

@@ -19,7 +19,7 @@ while [ -h "$SOURCE" ]; do
 done
 PROJECT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 
-APP_NAME="YOLO_AutoInstaller"
+APP_NAME="YOLO_AutoInstaller_2.0"
 SKIP_PIP_INSTALL=false
 
 # 清屏
@@ -677,8 +677,9 @@ info "运行方式: $RUN_MODE"
 info "执行命令: $EXEC_PATH"
 echo ""
 
-# 生成 .desktop 文件
+# 生成 .desktop 文件（快捷方式文件名固定为 YOLO_AutoInstaller.desktop，与程序版本号无关）
 ICON_PATH="$PROJECT_DIR/assets/app.png"
+DESKTOP_FILE="YOLO_AutoInstaller.desktop"
 DESKTOP_CONTENT="[Desktop Entry]
 Name=YOLO AutoInstaller
 Comment=YOLO 全版本一键部署工具
@@ -691,14 +692,14 @@ StartupNotify=true
 Path=$PROJECT_DIR"
 
 # 保存到项目目录
-echo "$DESKTOP_CONTENT" > "$PROJECT_DIR/$APP_NAME.desktop"
-chmod +x "$PROJECT_DIR/$APP_NAME.desktop"
+echo "$DESKTOP_CONTENT" > "$PROJECT_DIR/$DESKTOP_FILE"
+chmod +x "$PROJECT_DIR/$DESKTOP_FILE"
 
 # 复制到应用程序菜单
 APPS_DIR="$HOME/.local/share/applications"
 mkdir -p "$APPS_DIR"
-echo "$DESKTOP_CONTENT" > "$APPS_DIR/$APP_NAME.desktop"
-chmod +x "$APPS_DIR/$APP_NAME.desktop"
+echo "$DESKTOP_CONTENT" > "$APPS_DIR/$DESKTOP_FILE"
+chmod +x "$APPS_DIR/$DESKTOP_FILE"
 success "已添加到应用程序菜单"
 
 # 复制到桌面
@@ -710,9 +711,9 @@ elif [ -d "$HOME/桌面" ]; then
 fi
 
 if [ -n "$DESKTOP_DIR" ]; then
-    echo "$DESKTOP_CONTENT" > "$DESKTOP_DIR/$APP_NAME.desktop"
-    chmod +x "$DESKTOP_DIR/$APP_NAME.desktop"
-    success "已添加到桌面: $DESKTOP_DIR/$APP_NAME.desktop"
+    echo "$DESKTOP_CONTENT" > "$DESKTOP_DIR/$DESKTOP_FILE"
+    chmod +x "$DESKTOP_DIR/$DESKTOP_FILE"
+    success "已添加到桌面: $DESKTOP_DIR/$DESKTOP_FILE"
 else
     warn "未找到桌面目录，已跳过桌面快捷方式"
 fi

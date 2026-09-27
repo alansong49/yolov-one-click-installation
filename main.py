@@ -2166,8 +2166,18 @@ class MainWindow(QMainWindow):
                     idx = self.workspace_drive_combo.findData(drive)
                     if idx >= 0:
                         self.workspace_drive_combo.setCurrentIndex(idx)
+            else:
+                # Linux/macOS：安装位置为绝对路径，直接选中并补齐目录层级
+                idx = self.workspace_drive_combo.findData(ws)
+                if idx >= 0:
+                    self.workspace_drive_combo.setCurrentIndex(idx)
+                else:
+                    parent = os.path.dirname(ws)
+                    idx = self.workspace_drive_combo.findData(parent)
+                    if idx >= 0:
+                        self.workspace_drive_combo.setCurrentIndex(idx)
             folder = os.path.basename(ws)
-            if folder:
+            if folder and folder != ws:
                 self.workspace_folder_edit.setText(folder)
 
         self._set_controls_enabled(False)
