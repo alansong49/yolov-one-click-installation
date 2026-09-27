@@ -51,8 +51,8 @@ python main.py
 cd "一键安装 yolov"
 
 # 2. 执行一键安装脚本（自动安装系统依赖 + 打包 + 创建快捷方式）
-chmod +x Linux一键安装.sh
-bash Linux一键安装.sh
+chmod +x Linux.sh
+bash Linux.sh
 ```
 
 脚本自动完成：
@@ -156,7 +156,7 @@ python3 main.py
 ├── repos.yaml                 # YOLO 版本静态配置（镜像源地址）
 ├── YOLO_AutoInstaller.spec    # PyInstaller 打包配置（Windows）
 ├── build.bat                  # Windows 打包脚本
-├── Linux一键安装.sh           # Linux 一键安装脚本（依赖+打包+快捷方式）
+├── Linux.sh                   # Linux 一键安装脚本（依赖+打包+快捷方式，支持单文件自举）
 ├── assets/                    # 程序图标资源（固定命名，勿改名）
 │   ├── app.ico                #   Windows 窗口/exe 图标
 │   └── app.png                #   Linux 窗口/快捷方式图标
@@ -338,14 +338,22 @@ A: 不会。2.0 版本自动保存进度，重新打开程序后选择"继续部
 ### Q4: 训练报错找不到验证集图片？
 A: 确保 `data/images/val` 与 `data/labels/val` 中的文件一一对应（同名不同扩展名），且 `data.yaml` 的 `path/train/val` 指向正确。
 
-### Q5: Linux 下 LabelMe/LabelImg 启动失败？
-A: 常见原因是 OpenCV 的 Qt 插件冲突：
+### Q5: 标注工具（LabelImg / LabelMe）启动失败或标注中崩溃怎么办？
 
-```bash
-conda activate yolov5_env
-pip uninstall opencv-python -y
-pip install opencv-python-headless
-```
+2.0 版本已内置崩溃检测与一键修复。崩溃时程序会弹窗说明病因，点击「自动修复」即可自动重装兼容依赖（修复后自动重启）。也可按以下顺序手动排查：
+
+1. **查看运行日志**：`<程序目录>/logs/<工具名>_<时间戳>.log`，崩溃堆栈与触发原因均在其中。
+2. **OpenCV Qt 插件冲突（最常见，约占此类问题一半以上）**：LabelMe 依赖的 `opencv-python` 自带 Qt 插件，与 PyQt 冲突导致秒退：
+   ```bash
+   conda activate <环境名>
+   python -m pip uninstall opencv-python -y
+   python -m pip install opencv-python-headless
+   ```
+3. **中文/空格路径**：图片目录或文件名含中文、空格可能导致崩溃或编码错误。请将数据集移动到纯英文路径（如 `E:\datasets\img_0001.jpg`）。
+4. **PyQt5 版本不兼容（LabelImg）**：LabelImg 最后更新于 2021 年，依赖 Qt5。程序安装时会自动升级兼容版 PyQt5；若仍失败可手动执行 `pip install --upgrade PyQt5`。
+5. **numpy 2.x 不兼容**：numpy 2.0 移除了 `np.float`/`np.int` 等旧别名，旧工具调用会报错。程序检测到后会自动降级，也可手动 `pip install "numpy<2"`。
+6. **系统资源/权限**：确认环境目录可写（参考注意事项 1）；内存不足时关闭其他程序；超大图片（>50MB）建议先压缩。
+7. **文件损坏**：重装仍崩溃时，卸载工具后到标注页重新安装（安装完成会自动做导入冒烟测试）。
 
 ### Q6: 支持 GPU 版本吗？
 A: 支持。程序自动检测 NVIDIA 显卡并默认推荐 GPU 版本 PyTorch（CUDA 12.1）；无显卡时安装 CPU 版本。

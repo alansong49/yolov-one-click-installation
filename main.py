@@ -593,6 +593,12 @@ class InstallThread(QThread):
             self.log_signal.emit(f'正在安装 {pkg}...')
             for line in conda.pip_install(env_name, pkg):
                 self.log_signal.emit(line)
+            # 安装后兼容性加固；失败只警告，不阻断整体部署
+            ok, fix_msg = apply_annotation_fixes(
+                conda, env_name, pkg, self.log_signal.emit)
+            if not ok:
+                self.log_signal.emit(f'⚠️ {pkg} 兼容性加固未通过: {fix_msg}')
+                self.log_signal.emit('   可稍后在「标注工具」页卸载重装或手动排查')
 
         self.log_signal.emit('标注工具安装完成')
 
@@ -1149,16 +1155,105 @@ class AnnotationScanThread(QThread):
         self.finished_signal.emit(result)
 
 
+def _env_python_run(python_exe, code, timeout=60):
+    """在指定环境的 Python 解释器中执行代码片段，返回 (返回码, 合并输出)。"""
+    import subprocess
+    env = os.environ.copy()
+    env['PYTHONIOENCODING'] = 'utf-8'
+    env['PYTHONUTF8'] = '1'
+    try:
+        r = subprocess.run(
+            [python_exe, '-c', code],
+            capture_output=True, text=True, timeout=timeout,
+            env=env, encoding='utf-8', errors='ignore'
+        )
+    except Exception as e:
+        return -1, f'执行异常: {e}'
+    return r.returncode, (r.stdout or '') + (r.stderr or '')
+
+
+def apply_annotation_fixes(conda, env_name, tool_name, log_cb):
+    """标注工具安装后兼容性加固。
+
+    LabelImg：升级兼容版 PyQt5 → 导入冒烟测试 → numpy 2.x 不兼容时自动降级。
+    LabelMe ：opencv-python（自带 Qt 插件冲突主因）替换为 headless 版 → 冒烟测试。
+
+    返回 (是否成功, 失败原因)。
+    """
+    TUNA = 'https://pypi.tuna.tsinghua.edu.cn/simple'
+    try:
+        python_exe = conda.get_python_path(env_name)
+    except Exception:
+        python_exe = None
+    if not python_exe or not os.path.exists(python_exe):
+        return False, f'找不到环境 {env_name} 的 Python 解释器'
+
+    if tool_name == 'labelImg':
+        log_cb('🔧 加固 [1/3]: 升级兼容版 PyQt5（LabelImg 依赖 Qt5）...')
+        for line in conda.pip_install(env_name, 'PyQt5', upgrade=True,
+                                      index_url=TUNA):
+            log_cb(line)
+
+        log_cb('🔧 加固 [2/3]: LabelImg 导入冒烟测试...')
+        rc, out = _env_python_run(
+            python_exe,
+            'from labelImg.labelImg import main; print("SMOKE_OK")')
+        if 'SMOKE_OK' not in out:
+            # numpy 2.x 移除了 np.float/np.int 等别名，旧版 LabelImg 会崩
+            if 'numpy' in out and ("has no attribute" in out or "np.float" in out
+                                   or "np.int" in out):
+                log_cb('🔧 加固 [3/3]: 检测到 numpy 2.x 不兼容，降级 numpy<2 ...')
+                for line in conda.pip_install(env_name, 'numpy<2',
+                                              index_url=TUNA):
+                    log_cb(line)
+                rc, out = _env_python_run(
+                    python_exe,
+                    'from labelImg.labelImg import main; print("SMOKE_OK")')
+            if 'SMOKE_OK' not in out:
+                return False, f'LabelImg 冒烟测试失败:\n{out.strip()[-500:]}'
+        log_cb('✅ LabelImg 冒烟测试通过')
+        return True, ''
+
+    if tool_name == 'labelme':
+        # opencv-python 自带 Qt 插件，与 PyQt 冲突是 LabelMe 崩溃首因
+        rc, out = _env_python_run(
+            python_exe,
+            'import subprocess, sys; '
+            'r = subprocess.run([sys.executable, "-m", "pip", "show", '
+            '"opencv-python"], capture_output=True); '
+            'print("HAS_CV2_QT" if r.returncode == 0 else "NO")')
+        if 'HAS_CV2_QT' in out:
+            log_cb('🔧 加固 [1/2]: 检测到 opencv-python，替换为 headless 版（消除 Qt 插件冲突）...')
+            for line in conda.pip_uninstall(env_name, 'opencv-python'):
+                log_cb(line)
+            for line in conda.pip_install(env_name, 'opencv-python-headless',
+                                          index_url=TUNA):
+                log_cb(line)
+        else:
+            log_cb('ℹ️ 未检测到冲突版 opencv-python，跳过替换')
+
+        log_cb('🔧 加固 [2/2]: LabelMe 导入冒烟测试...')
+        rc, out = _env_python_run(python_exe,
+                                  'import labelme; print("SMOKE_OK")')
+        if 'SMOKE_OK' not in out:
+            return False, f'LabelMe 冒烟测试失败:\n{out.strip()[-500:]}'
+        log_cb('✅ LabelMe 冒烟测试通过')
+        return True, ''
+
+    return True, ''
+
+
 class AnnotationToolInstallThread(QThread):
     log_signal = pyqtSignal(str)
     finished_signal = pyqtSignal(bool, str, str, str)
 
-    def __init__(self, conda_path, env_name, tool_name, is_install):
+    def __init__(self, conda_path, env_name, tool_name, is_install, force_reinstall=False):
         super().__init__()
         self.conda_path = conda_path
         self.env_name = env_name
         self.tool_name = tool_name
         self.is_install = is_install
+        self.force_reinstall = force_reinstall
 
     def run(self):
         success = False
@@ -1169,9 +1264,19 @@ class AnnotationToolInstallThread(QThread):
             self.log_signal.emit(f'正在{action} {self.tool_name}...')
 
             if self.is_install:
-                for line in conda.pip_install(self.env_name, self.tool_name, index_url='https://pypi.tuna.tsinghua.edu.cn/simple'):
+                for line in conda.pip_install(self.env_name, self.tool_name,
+                                             force_reinstall=self.force_reinstall,
+                                             index_url='https://pypi.tuna.tsinghua.edu.cn/simple'):
                     self.log_signal.emit(line)
-                success = True
+                # 安装后兼容性加固（冒烟测试不通过则返回失败原因）
+                ok, fix_msg = apply_annotation_fixes(
+                    conda, self.env_name, self.tool_name,
+                    self.log_signal.emit)
+                if not ok:
+                    success = False
+                    error_msg = fix_msg
+                else:
+                    success = True
             else:
                 for line in conda.pip_uninstall(self.env_name, self.tool_name):
                     self.log_signal.emit(line)
@@ -1185,6 +1290,62 @@ class AnnotationToolInstallThread(QThread):
 
         action = '安装' if self.is_install else '卸载'
         self.finished_signal.emit(success, self.env_name, self.tool_name, error_msg)
+
+
+class AnnotationCrashWatchThread(QThread):
+    """标注工具进程守护：输出落日志文件；启动即退 / 运行中崩溃均可被发现。"""
+    started_ok = pyqtSignal(int)                     # pid
+    start_failed = pyqtSignal(int, str)             # 返回码, 日志尾部
+    crashed = pyqtSignal(int, str, str)             # 返回码, 日志尾部, 日志路径
+    normal_exit = pyqtSignal()
+
+    def __init__(self, cmd, env, log_path, parent=None):
+        super().__init__(parent)
+        self.cmd = cmd
+        self.env = env
+        self.log_path = log_path
+
+    @staticmethod
+    def _read_tail(path, limit=1500):
+        try:
+            with open(path, 'rb') as f:
+                return f.read().decode('utf-8', errors='ignore')[-limit:]
+        except Exception:
+            return ''
+
+    def run(self):
+        import subprocess
+        import time
+        try:
+            logf = open(self.log_path, 'wb')
+        except Exception as e:
+            self.start_failed.emit(-1, f'无法写入日志文件: {e}')
+            return
+        try:
+            p = subprocess.Popen(
+                self.cmd, stdout=logf,
+                stderr=subprocess.STDOUT, env=self.env)
+        except Exception as e:
+            logf.close()
+            self.start_failed.emit(-1, str(e))
+            return
+
+        # 3 秒存活检查
+        time.sleep(3)
+        rc = p.poll()
+        if rc is not None:
+            logf.close()
+            self.start_failed.emit(rc, self._read_tail(self.log_path))
+            return
+
+        self.started_ok.emit(p.pid)
+        p.wait()
+        logf.close()
+        tail = self._read_tail(self.log_path)
+        if p.returncode == 0:
+            self.normal_exit.emit()
+        else:
+            self.crashed.emit(p.returncode, tail, self.log_path)
 
 
 class EnvInstallDialog(QDialog):
@@ -2082,6 +2243,8 @@ class MainWindow(QMainWindow):
         self.env_install_thread = None
         self._anno_scan_thread = None
         self._anno_install_thread = None
+        self._anno_watchers = []          # 标注工具守护线程，运行期间持有引用
+        self._relaunch_after_repair = None  # 修复完成后自动重启的工具名
         self._editor_deploy_thread = None
         # 操作页 val/predict/export/video 线程，运行期间持有引用，
         # 结束自动移除，避免被 GC 回收正在运行的 QThread 导致硬崩溃
@@ -2642,7 +2805,9 @@ class MainWindow(QMainWindow):
         hint_label = QLabel(
             '💡 说明：\n'
             '  • LabelImg：适合矩形框标注，直接输出 YOLO 格式\n'
-            '  • LabelMe：支持多边形标注，需转换为 YOLO 格式'
+            '  • LabelMe：支持多边形标注，需转换为 YOLO 格式\n'
+            '⚠️ 注意：图片路径与文件名请使用纯英文/数字，避免中文、空格，否则工具可能崩溃\n'
+            '📄 崩溃排查：运行日志保存在 <程序目录>/logs/，崩溃时弹窗可一键自动修复'
         )
         hint_label.setStyleSheet('color: #666; font-size: 11px;')
         hint_label.setWordWrap(True)
@@ -3617,12 +3782,21 @@ class MainWindow(QMainWindow):
     def _on_anno_tool_install_finished(self, success, env_name, tool_name, error_msg):
         self._set_anno_buttons_enabled(True)
 
-        action = '安装' if self._anno_install_thread and self._anno_install_thread.is_install else '操作'
+        is_repair = (self._relaunch_after_repair == tool_name)
+        action = '修复' if is_repair else (
+            '安装' if self._anno_install_thread and self._anno_install_thread.is_install
+            else '操作')
         if success:
             self.anno_install_status.setText(f'✅ {tool_name} {action}成功')
             self.anno_install_status.setStyleSheet('color: green; font-size: 11px;')
             self._refresh_annotation_envs()
+            # 修复成功 → 自动重启该工具
+            if is_repair:
+                self._relaunch_after_repair = None
+                self.append_log(f'🔧 {tool_name} 修复完成，自动重启...')
+                self._launch_annotation_tool(tool_name)
         else:
+            self._relaunch_after_repair = None
             self.anno_install_status.setText(f'❌ {tool_name} {action}失败')
             self.anno_install_status.setStyleSheet('color: red; font-size: 11px;')
             if error_msg:
@@ -4065,61 +4239,129 @@ print('')
                 # 增加调试输出
                 env['QT_DEBUG_PLUGINS'] = '0'  # 设为 1 可调试插件加载问题
 
-            popen_kwargs = {
-                'stdout': subprocess.PIPE,
-                'stderr': subprocess.PIPE,
-                'env': env,
-            }
-            if is_windows():
-                popen_kwargs['creationflags'] = 0
+            # 日志文件：<运行目录>/logs/<工具>_<时间戳>.log
+            from modules.platform_utils import get_runtime_dir
+            import datetime
+            log_dir = os.path.join(get_runtime_dir(), 'logs')
+            try:
+                os.makedirs(log_dir, exist_ok=True)
+            except Exception:
+                log_dir = os.path.expanduser('~')
+            ts = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+            tool_log = os.path.join(log_dir, f'{tool_name}_{ts}.log')
 
-            process = subprocess.Popen(cmd, **popen_kwargs)
+            self.append_log(f'📄 运行日志: {tool_log}')
 
-            import time
-            time.sleep(2)
+            watcher = AnnotationCrashWatchThread(cmd, env, tool_log)
+            watcher.started_ok.connect(
+                lambda pid: self._on_anno_started_ok(tool_name, pid))
+            watcher.start_failed.connect(
+                lambda rc, tail: self._on_anno_start_failed(
+                    tool_name, env_name, rc, tail))
+            watcher.crashed.connect(
+                lambda rc, tail, lp: self._on_anno_crashed(
+                    tool_name, env_name, rc, tail, lp))
+            watcher.normal_exit.connect(
+                lambda: self.append_log(f'ℹ️ {tool_name} 已正常关闭'))
+            watcher.finished.connect(
+                lambda w=watcher: self._remove_anno_watcher(w))
+            self._anno_watchers.append(watcher)
+            watcher.start()
 
-            if process.poll() is not None:
-                stdout, stderr = process.communicate()
-                error_msg = stderr.decode('utf-8', errors='ignore') or stdout.decode('utf-8', errors='ignore')
-                self.append_log(f'❌ 启动失败，进程已退出，返回码: {process.returncode}')
-                if error_msg:
-                    self.append_log(f'错误信息: {error_msg[:500]}')
-
-                # 检查是否是 Qt 插件冲突问题
-                fix_suggestion = ''
-                if 'cv2/qt/plugins' in error_msg and 'xcb' in error_msg:
-                    fix_suggestion = (
-                        '\n\n🔧 常见原因：OpenCV 自带的 Qt 插件与 PyQt 冲突\n'
-                        '\n解决方案（在终端执行）：\n'
-                        f'  conda activate {env_name}\n'
-                        f'  pip uninstall opencv-python -y\n'
-                        f'  pip install opencv-python-headless\n'
-                        '\n安装 headless 版本后重新启动即可。'
-                    )
-                elif 'wayland' in error_msg.lower() or 'XDG_SESSION_TYPE' in error_msg:
-                    fix_suggestion = (
-                        '\n\n🔧 常见原因：Wayland 显示服务器兼容性问题\n'
-                        '\n解决方案：设置环境变量后重新启动\n'
-                        '  export QT_QPA_PLATFORM=xcb'
-                    )
-
-                QMessageBox.critical(
-                    self, '启动失败',
-                    f'{tool_name} 启动失败！\n\n返回码: {process.returncode}\n\n错误信息:\n{error_msg[:800]}{fix_suggestion}'
-                )
-                return
-
-            self.append_log(f'✅ {tool_name} 已启动 (PID: {process.pid})')
-            QMessageBox.information(
-                self, '启动成功',
-                f'{tool_name} 已在环境 {env_name} 中启动。\n\n'
-                '如果窗口没有显示，请检查任务栏或稍等几秒。'
-            )
         except Exception as e:
             self.append_log(f'❌ 启动 {tool_name} 失败: {e}')
             import traceback
             self.append_log(traceback.format_exc())
             QMessageBox.critical(self, '启动失败', f'启动 {tool_name} 失败:\n{e}')
+
+    # ---- 标注工具守护信号处理 ----
+
+    def _remove_anno_watcher(self, watcher):
+        try:
+            self._anno_watchers.remove(watcher)
+        except ValueError:
+            pass
+
+    def _on_anno_started_ok(self, tool_name, pid):
+        self.append_log(f'✅ {tool_name} 已启动 (PID: {pid})，如无窗口请查看任务栏')
+
+    @staticmethod
+    def _anno_diagnosis(error_msg):
+        """根据错误文本返回 (病因说明, 是否可自动修复)。"""
+        low = error_msg.lower()
+        if 'cv2/qt/plugins' in error_msg or (
+                'opencv' in low and ('qt' in low or 'plugin' in low)):
+            return ('OpenCV 自带的 Qt 插件与 PyQt 冲突', True)
+        if 'xcb' in low and ('could not load' in low or 'failed' in low
+                             or 'plugin' in low):
+            return ('Qt 平台插件 xcb 加载失败（系统库缺失或损坏）', True)
+        if 'wayland' in low:
+            return ('Wayland 显示服务器兼容性问题', True)
+        if 'numpy' in low and 'has no attribute' in low:
+            return ('numpy 2.x 与旧版工具不兼容', True)
+        if 'unicode' in low or 'codec' in low or 'gbk' in low:
+            return ('路径或文件名编码问题（中文/特殊字符）', False)
+        if 'no module' in low or 'importerror' in low:
+            return ('依赖组件缺失或安装不完整', True)
+        return ('未识别的错误，请查看完整日志', False)
+
+    def _on_anno_start_failed(self, tool_name, env_name, rc, tail):
+        self.append_log(f'❌ {tool_name} 启动失败，返回码: {rc}')
+        cause, can_repair = self._anno_diagnosis(tail)
+        self.append_log(f'   病因: {cause}')
+
+        box = QMessageBox(self)
+        box.setIcon(QMessageBox.Icon.Critical)
+        box.setWindowTitle('启动失败')
+        box.setText(f'{tool_name} 启动失败\n\n病因：{cause}\n\n'
+                    f'日志尾部：\n{tail[-600:]}')
+        repair_btn = None
+        if can_repair:
+            repair_btn = box.addButton('🔧 自动修复',
+                                       QMessageBox.ButtonRole.AcceptRole)
+        box.addButton('关闭', QMessageBox.ButtonRole.RejectRole)
+        box.exec()
+        if repair_btn is not None and box.clickedButton() is repair_btn:
+            self._repair_annotation_tool(tool_name, env_name)
+
+    def _on_anno_crashed(self, tool_name, env_name, rc, tail, log_path):
+        self.append_log(f'💥 {tool_name} 运行中意外退出，返回码: {rc}')
+        cause, can_repair = self._anno_diagnosis(tail)
+        self.append_log(f'   病因: {cause} | 日志: {log_path}')
+
+        box = QMessageBox(self)
+        box.setIcon(QMessageBox.Icon.Warning)
+        box.setWindowTitle('标注工具已崩溃')
+        box.setText(f'{tool_name} 在标注过程中意外关闭。\n\n'
+                    f'可能病因：{cause}\n\n'
+                    f'日志文件：{log_path}\n\n'
+                    f'日志尾部：\n{tail[-600:]}')
+        repair_btn = None
+        if can_repair:
+            repair_btn = box.addButton('🔧 自动修复并重启',
+                                       QMessageBox.ButtonRole.AcceptRole)
+        box.addButton('关闭', QMessageBox.ButtonRole.RejectRole)
+        box.exec()
+        if repair_btn is not None and box.clickedButton() is repair_btn:
+            self._relaunch_after_repair = tool_name
+            self._repair_annotation_tool(tool_name, env_name)
+
+    def _repair_annotation_tool(self, tool_name, env_name):
+        if self._anno_install_thread and self._anno_install_thread.isRunning():
+            QMessageBox.warning(self, '提示', '已有修复任务在执行，请稍候。')
+            return
+        self.append_log(f'🔧 开始修复 {tool_name}（强制重装 + 兼容性加固）...')
+        self._set_anno_buttons_enabled(False)
+        self.anno_install_status.setText(f'⏳ 正在修复 {tool_name}...')
+        self.anno_install_status.setStyleSheet(
+            'color: #1976D2; font-size: 11px;')
+        self._anno_install_thread = AnnotationToolInstallThread(
+            self.env_result['conda_path'], env_name, tool_name,
+            True, force_reinstall=True)
+        self._anno_install_thread.log_signal.connect(self.append_log)
+        self._anno_install_thread.finished_signal.connect(
+            self._on_anno_tool_install_finished)
+        self._anno_install_thread.start()
 
     def show_about(self):
         dialog = AboutDialog(self)
