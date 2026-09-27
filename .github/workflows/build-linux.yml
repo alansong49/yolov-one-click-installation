@@ -48,7 +48,8 @@ jobs:
 
       - name: Upload installer script to v2.0 Release
         run: |
-          gh release upload v2.0 --clobber "Linux一键安装.sh" \
+          cp "Linux一键安装.sh" linux-installer.sh
+          gh release upload v2.0 --clobber linux-installer.sh \
             --repo alansong49/yolov-one-click-installation
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
