@@ -1200,28 +1200,34 @@ for cand in (os.path.join(sp, "libs", "canvas.py"),
 if not path:
     print("PATCH_SKIP: canvas.py not found"); sys.exit(0)
 src = open(path, "r", encoding="utf-8").read()
-if "YOLO_AI_CANVAS_PATCH" in src:
-    print("PATCH_ALREADY"); sys.exit(0)
-new = src
-# camelCase（1.8.6 等新版）与 snake_case（旧版）两种写法都兼容
-for name in ("prevPoint", "prev_point"):
-    new = re.sub(
-        r"p\.drawLine\(self\." + name + r"\.x\(\), 0, self\." + name + r"\.x\(\), self\.pixmap\.height\(\)\)",
-        "p.drawLine(int(self." + name + ".x()), 0, int(self." + name + ".x()), self.pixmap.height())  # YOLO_AI_CANVAS_PATCH",
-        new)
-    new = re.sub(
-        r"p\.drawLine\(0, self\." + name + r"\.y\(\), self\.pixmap\.width\(\), self\." + name + r"\.y\(\)\)",
-        "p.drawLine(0, int(self." + name + ".y()), self.pixmap.width(), int(self." + name + ".y()))  # YOLO_AI_CANVAS_PATCH",
-        new)
+# 通用转换：drawRect/drawLine 的所有重载均为全 int 签名，
+# 将其每个参数包 int()（float/表达式/已 int 均幂等无害）。
+# 不依赖变量命名（prevPoint/prev_point、leftTop/left_top 通吃）与行号。
+def _intify(m):
+    method, args = m.group(1), m.group(2)
+    parts = [a.strip() for a in args.split(",")]
+    wrapped = ", ".join("int(%s)" % a if a else a for a in parts)
+    return "p.%s(%s)" % (method, wrapped)
+new = re.sub(
+    r"\bp\.(drawRect|drawLine)\(((?:[^()]|\([^()]*\))*)\)",
+    _intify, src)
 if new != src:
     open(path, "w", encoding="utf-8").write(new)
     print("PATCH_OK")
 else:
-    print("PATCH_NOT_FOUND")
+    # 无变化：仅当全部参数已包裹时视为已补丁，否则视为未匹配
+    def _unwrapped(s):
+        for mm in re.finditer(r"\bp\.(drawRect|drawLine)\(((?:[^()]|\([^()]*\))*)\)", s):
+            for a in mm.group(2).split(","):
+                a = a.strip()
+                if a and not a.startswith("int("):
+                    return True
+        return False
+    print("PATCH_ALREADY" if not _unwrapped(src) else "PATCH_NOT_FOUND")
 '''
     rc, out = _env_python_run(python_exe, patch_code, timeout=60)
     if 'PATCH_OK' in out:
-        log_cb('✅ 已修补 canvas.py 十字准线 float 崩溃点')
+        log_cb('✅ 已修补 canvas.py 全部 drawRect/drawLine float 崩溃点')
         return True
     if 'PATCH_ALREADY' in out:
         log_cb('ℹ️ canvas.py 补丁已存在，跳过')
