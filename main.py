@@ -1187,8 +1187,17 @@ try:
     import labelImg
 except ImportError:
     print("PATCH_SKIP: labelImg not installed"); sys.exit(0)
-path = os.path.join(os.path.dirname(labelImg.__file__), "libs", "canvas.py")
-if not os.path.exists(path):
+# LabelImg 的 setup.py 把 libs 作为顶层包安装（site-packages/libs/canvas.py），
+# 部分布局为 labelImg/libs/canvas.py，两种都探测
+base = os.path.dirname(labelImg.__file__)
+sp = os.path.dirname(base)
+path = None
+for cand in (os.path.join(sp, "libs", "canvas.py"),
+             os.path.join(base, "libs", "canvas.py")):
+    if os.path.exists(cand):
+        path = cand
+        break
+if not path:
     print("PATCH_SKIP: canvas.py not found"); sys.exit(0)
 src = open(path, "r", encoding="utf-8").read()
 if "YOLO_AI_CANVAS_PATCH" in src:
@@ -4203,6 +4212,13 @@ class MainWindow(QMainWindow):
 
             env_dir = os.path.dirname(python_exe)
             from modules.platform_utils import is_windows
+
+            # labelImg 启动前自动修补 canvas.py（幂等）：
+            # 修复旧安装中"新版 PyQt5 拒收 float 坐标"导致的标注崩溃
+            if tool_name == 'labelImg':
+                _patch_labelimg_canvas(python_exe,
+                                       lambda m: self.append_log(f'   {m}'))
+
             if is_windows():
                 scripts_dir = os.path.join(env_dir, 'Scripts')
                 labelimg_exe_name = 'labelImg.exe'
